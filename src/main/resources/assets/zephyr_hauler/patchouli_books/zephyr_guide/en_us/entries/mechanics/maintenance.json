@@ -1,0 +1,44 @@
+{
+  "name": "Damage & Repair",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:zephyr_station",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Haulers endure a lot of stress. A standard balloon can make up to $(2)8 trips$() before breaking. However, flying in bad weather is punishing: $(4)Rain$() consumes 2 uses per trip, and $(4)Storms$() consume 3. Watch out for $(8)black smoke$(); it means your hauler is near failure."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_station",
+      "text": "If durability hits zero mid-flight, the balloon will crash-land and become $(4)inoperable$(). To get it back in the sky, you must repair it at a $(2)Maintenance Station$()."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step1_place.png"
+      ],
+      "title": "Step 1: Placement",
+      "border": true,
+      "text": "Hold the broken hauler in your hand and $(2)Right-Click$() the Maintenance Station to place it on the repair platform."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step2_inspect.png"
+      ],
+      "title": "Step 2: Diagnostics",
+      "border": true,
+      "text": "With an $(2)Empty Hand$(), Right-Click the station. The system will analyze the balloon and tell you the specific damage (e.g., Clogged Burner, Torn Fabric)."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step3_repair.png"
+      ],
+      "title": "Step 3: Repair",
+      "border": true,
+      "text": "Hold the required material ($(2)String$(), $(2)Iron$(), $(2)Wool$(), etc.) and Right-Click to fix the damage. Finally, $(2)Shift + Right-Click$() to retrieve your good-as-new hauler!"
+    }
+  ]
+}

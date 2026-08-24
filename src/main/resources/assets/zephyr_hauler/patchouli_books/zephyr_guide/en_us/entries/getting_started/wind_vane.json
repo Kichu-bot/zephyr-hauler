@@ -1,0 +1,31 @@
+{
+  "name": "Wind Vane",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:wind_meter",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "To master the skies, an aviator must always know which way the air flows. The $(2)Wind Vane$() is an essential handheld engineering tool designed to read current atmospheric conditions and wind currents."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:wind_meter",
+      "text": "Here is the standard crafting recipe for the Wind Vane, utilizing basic metals, copper, and structural components."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:wind_meter",
+      "title": "Using the Vane",
+      "text": "Right-click the air with the Wind Vane in hand to instantly measure the weather intensity and direction. It will report whether there is a soft breeze, strong wind, or hurricane, allowing you to plan heavy shipments."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/wind_vane_use.png"
+      ],
+      "title": "Reading the Wind",
+      "text": "When used successfully, a chat notification will appear showing the precise direction and speed of the wind currents around you."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Your First Hauler",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_hauler",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Zephyr Hauler is the core of everything. By right-clicking on a compatible chest or machine, it will capture it and begin ascending towards the sky looking for its linked destination."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_white",
+      "text": "Here you can see the materials needed to assemble your first hauler at the crafting table."
+    }
+  ]
+}

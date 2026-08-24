@@ -1,0 +1,32 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.Zephyr Hauler Item - Converted",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Zephyr",
+					"pivot": [-0.00203, 31.08709, 0.00316],
+					"cubes": [
+						{"origin": [-3.60122, 1.5, -3.5981], "size": [7.2, 1.2, 7.2], "uv": [32, 8]},
+						{"origin": [-3.60122, 0.4523, -3.5981], "size": [0, 1.2, 7.2], "uv": [32, 16]},
+						{"origin": [3.59878, 0.4523, -3.5981], "size": [0, 1.2, 7.2], "uv": [32, 24]},
+						{"origin": [-3.60122, 0.4523, 2.0019], "size": [0, 1.2, 7.2], "pivot": [2.79878, 0.05225, 2.8019], "rotation": [0, -90, 0], "uv": [32, 32]},
+						{"origin": [-3.412, 0.4523, 9.0019], "size": [0, 1.2, 7.2], "pivot": [2.79878, 0.05225, 9.8019], "rotation": [0, -90, 0], "uv": [0, 34]},
+						{"origin": [-4.00122, 10.45225, -3.9981], "size": [8, 2, 8], "uv": [0, 14]},
+						{"origin": [-4.00122, 2.45225, -3.9981], "size": [8, 2, 8], "uv": [0, 24]},
+						{"origin": [-0.60122, 12.3523, -0.3981], "size": [1, 1, 1], "uv": [18, 35]},
+						{"origin": [-4.40122, 4.45225, -4.3981], "size": [8.8, 6, 8.8], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

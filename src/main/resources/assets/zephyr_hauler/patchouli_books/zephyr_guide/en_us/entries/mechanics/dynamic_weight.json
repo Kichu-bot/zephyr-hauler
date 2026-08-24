@@ -1,0 +1,31 @@
+{
+  "name": "Dynamic Weight",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:anvil",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Physics apply to your fleet! The Zephyr Hauler features a $(2)Dynamic Weight$() system. The more items you have stored inside the chest, barrel, or machine you are transporting, the heavier the cargo becomes."
+    },
+    {
+      "title": "Weight Penalties",
+      "type": "patchouli:text",
+      "text": "$(2)Light/Medium:$() Safe and fast.$(br)$(2)Heavy/Overloaded:$() Sluggish ascent. 30% chance to take structural damage upon landing due to high inertia.$(br)$(4)Colossal (>54 Stacks):$() Barely flies. Falls like an anvil and takes $(4)guaranteed severe damage$() without proper upgrades."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/heavy_cargo.png"
+      ],
+      "title": "Cargo Density",
+      "border": true,
+      "text": "*(Placeholder)* Keep an eye on how full your transported containers are; weight is calculated dynamically block by block."
+    },
+    {
+      "title": "Countering Weight:",
+      "type": "patchouli:text",
+      "text": "If you must move massive shipments of heavy resources, compensate for the drag by burning high-tier fuels like $(2)Soul Sand$() or $(2)Wind Charges$(), or permanently install the $(2)Aerodynamic$() upgrade."
+    }
+  ]
+}

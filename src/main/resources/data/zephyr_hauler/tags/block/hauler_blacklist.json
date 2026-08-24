@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "zephyr_hauler:zephyr_dock",
+    "zephyr_hauler:zephyr_station",
+    "minecraft:spawner",
+    "minecraft:command_block",
+    "minecraft:repeating_command_block",
+    "minecraft:chain_command_block",
+    "minecraft:beacon",
+    "minecraft:end_portal_frame"
+  ]
+}

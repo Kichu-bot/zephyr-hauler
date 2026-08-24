@@ -1,0 +1,36 @@
+{
+  "name": "Fuels and Speed",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:wind_charge",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A hauler's burner needs heat to lift the cargo. You can launch a balloon with an $(2)Empty Hand$(), but the trip will be slow ($(2)x0.5 speed$()). If you are in a hurry, you can feed special fuels to the anchored balloon by right-clicking it."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:coal",
+      "title": "Standard Flight",
+      "text": "Using $(2)Coal$() or Dried Kelp heats the burner to normal operational levels, providing a standard flight speed multiplier of $(2)x1.0$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:blaze_powder",
+      "title": "Fast Flight",
+      "text": "Using $(2)Blaze Powder$() or Magma Cream increases the heat significantly, granting a fast flight speed multiplier of $(2)x1.5$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:soul_sand",
+      "title": "Swift Flight",
+      "text": "Fueling the burner with nether energy from $(2)Soul Sand$() provides a powerful swift flight speed multiplier of $(2)x2.0$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:wind_charge",
+      "title": "Rocket Flight",
+      "text": "Using an explosive $(2)Wind Charge$() or Gunpowder turns the hauler into a rocket, granting the ultimate maximum speed multiplier of $(2)x3.0$()."
+    }
+  ]
+}

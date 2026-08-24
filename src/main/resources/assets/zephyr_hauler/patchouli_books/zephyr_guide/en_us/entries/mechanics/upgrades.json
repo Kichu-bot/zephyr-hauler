@@ -1,0 +1,60 @@
+{
+  "name": "Permanent Upgrades",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:phantom_membrane",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can permanently modify your haulers by combining them with special materials in any $(2)Crafting Table$(). Since these are applied shapelessly, simply place your hauler and the material anywhere in the grid."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:iron_ingot",
+      "title": "Reinforced",
+      "text": "Adding any $(2)Iron Ingot$() to your hauler increases its maximum durability, allowing it to withstand $(2)12 trips$() instead of the standard 8. Crucial for carrying heavy loads."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:phantom_membrane",
+      "title": "Aerodynamic",
+      "text": "Stitching a $(2)Phantom Membrane$() to the fabric optimizes the airflow, providing the hauler with a passive $(2)+25% speed bonus$() on all flights."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:honeycomb",
+      "title": "Waxed",
+      "text": "Coating the balloon with a $(2)Honeycomb$() waterproofs the entire structure, preventing double durability wear when flying through $(2)Rain$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:lightning_rod",
+      "title": "Insulated",
+      "text": "Wiring a $(2)Lightning Rod$() into the basket protects the sensitive navigation systems, making the hauler immune to damage from $(2)Thunderstorms$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:shulker_shell",
+      "title": "Buoyancy",
+      "text": "Installing a $(2)Shulker Shell$() grants the balloon anti-gravity properties. This effectively $(2)reduces the cargo's Weight Tier by 1$(), allowing massive loads to fly as if they were much lighter."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:slime_block",
+      "title": "Shock Absorbers",
+      "text": "Adding a $(2)Slime Block$() creates shock absorbers for the basket. This $(2)completely negates impact damage$() when heavy or overloaded haulers crash down onto the dock."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:magma_block",
+      "title": "Supercharged",
+      "text": "Integrating a $(2)Magma Block$() creates a Supercharged Burner. This $(2)increases your fuel tier by 1$(), meaning basic Coal will grant the extreme lifting power of Blaze Powder."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:netherite_ingot",
+      "title": "Netherite Plating",
+      "text": "Forging a $(2)Netherite Ingot$() onto the frame creates the ultimate hauler. This heavy plating extends the maximum durability to a massive $(2)32 trips$().$(br)$(br)Note: The hauler must already have the $(2)Reinforced$() upgrade to accept this."
+    }
+  ]
+}

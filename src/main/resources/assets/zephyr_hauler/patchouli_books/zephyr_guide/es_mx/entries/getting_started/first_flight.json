@@ -1,0 +1,17 @@
+{
+  "name": "Tu Primer Globo",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_hauler",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El Globo de Carga Zephyr es el núcleo de todo. Al hacer clic derecho sobre un cofre o máquina compatible, lo capturará y comenzará a ascender hacia el cielo buscando su destino vinculado."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_white",
+      "text": "Aquí puedes ver los materiales necesarios para ensamblar tu primer globo en la mesa de crafteo."
+    }
+  ]
+}

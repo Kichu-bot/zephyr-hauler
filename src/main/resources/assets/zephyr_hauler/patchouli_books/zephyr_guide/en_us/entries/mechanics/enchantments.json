@@ -1,0 +1,19 @@
+{
+  "name": "Enchantments",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:enchanting_table",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Mystical Reinforcements",
+      "text": "Because Zephyr Haulers rely on specialized structural components rather than standard tool durability, they reject almost all traditional magic.$(br)$(br)However, you $(2)can$() enchant them with $(2)Unbreaking (I - III)$() using an Enchanting Table or Anvil."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:enchanted_book",
+      "title": "Unbreaking Synergy",
+      "text": "Unbreaking grants a high chance to completely ignore durability damage during a flight or a rough landing.$(br)$(br)When combined with $(2)Netherite Plating$(), an $(2)Unbreaking III$() balloon can average over $(2)120 safe trips$() before needing a Maintenance Station."
+    }
+  ]
+}

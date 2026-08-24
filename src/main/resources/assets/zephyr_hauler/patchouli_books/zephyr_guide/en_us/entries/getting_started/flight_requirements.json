@@ -1,0 +1,43 @@
+{
+  "name": "Flight Requirements",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:scaffolding",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Before launching a Zephyr Hauler, you must ensure its flight path is completely unobstructed. Balloons are massive structures and require strict clearance to ascend safely into the atmosphere."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_dock",
+      "text": "The $(item)Zephyr Dock$() is the fundamental destination block for your network. It acts as a secure landing pad to receive haulers and their cargo. Right-click an empty dock to assign it a unique name."
+    },
+    {
+      "title": "Required Area",
+      "type": "patchouli:text",
+      "text": "$(2)The 3x3 Clearance:$()$(br)A hauler requires a strictly clear $(2)3x3 block area$() centered directly above the dock and extending all the way upwards. If any solid block, tree branch, or wall intercepts this column, the launch will abort."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/flight_clearance.png"
+      ],
+      "title": "Clearance Zone",
+      "border": true
+    },
+    {
+      "title": "Required Altitude ",
+      "type": "patchouli:text",
+      "text": "$(2)Altitude Requirement$() 60 Blocks$(br)The balloon must have an unobstructed vertical path upwards for a distance of at least $(2)60 blocks$() towards the sky limit. If a ceiling or mountain blocks this path, the system will trigger a $(4)Path Blocked$() warning."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/altitude_clearance.png"
+      ],
+      "title": "Clearance Zone",
+      "border": true
+    }
+  ]
+}

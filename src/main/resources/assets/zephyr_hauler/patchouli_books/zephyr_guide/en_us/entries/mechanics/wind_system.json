@@ -1,0 +1,38 @@
+{
+  "name": "Wind & Weather",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:wind_meter",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The sky is a volatile and unpredictable place. Your transport fleet is completely at the mercy of atmospheric conditions. While clear skies offer gentle breezes, severe weather changes everything."
+    },
+    {
+      "title": "Weather Conditions:",
+      "type": "patchouli:text",
+      "text": "$(2)Clear Skies:$() Calm currents, ideal for standard, safe shipments.$(br)$(4)Rain:$() Generates moderate turbulence and accelerates balloon wear.$(br)$(4)Thunderstorms:$() Violent gales and lightning risk; highly dangerous for fragile cargo."
+    },
+    {
+      "title": "Tailwinds:",
+      "type": "patchouli:text",
+      "text": "Traveling in the same direction as the wind current catches the balloon's canvas, granting a massive $(2)Speed Boost$() that shortens travel time significantly."
+    },
+    {
+      "title": "Headwinds:",
+      "type": "patchouli:text",
+      "text": "Forcing your hauler to fly directly against strong opposing winds results in a severe $(4)Speed Penalty$(), dragging down efficiency and burning through valuable trip durability."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:wind_meter",
+      "title": "Wind Direction",
+      "text": "Always check the wind direction with your Wind Vane before launching heavy shipments to ensure you fly with the currents rather than against them."
+    },
+    {
+      "title": "Altitude Dynamics:",
+      "type": "patchouli:text",
+      "text": "Wind currents change depending on the elevation of your departure dock:$(br)$(2)High Peaks (Y > 128):$() Exposes your hauler to powerful upper atmospheric streams, boosting all wind effects by $(2)50%$().$(br)$(4)Low Valleys (Y < 60):$() Mountains and terrain block the breeze, cutting the wind's influence by $(4)50%$()."
+    }
+  ]
+}

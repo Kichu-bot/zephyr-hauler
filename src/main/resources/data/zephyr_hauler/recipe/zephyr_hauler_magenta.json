@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPL",
+    "PWP",
+    "IPS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "W": {
+      "item": "minecraft:magenta_wool"
+    }
+  },
+  "result": {
+    "id": "zephyr_hauler:zephyr_hauler",
+    "components": {
+      "zephyr_hauler:hauler_color": "magenta"
+    }
+  }
+}

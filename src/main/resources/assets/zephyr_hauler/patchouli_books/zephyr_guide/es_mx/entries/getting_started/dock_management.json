@@ -1,0 +1,31 @@
+{
+  "name": "Gestión de Muelles",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_dock",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Las redes logísticas requieren mantenimiento. A veces un globo puede ser interrumpido, o podrías querer reutilizar un destino viejo. Saber cómo se comporta un muelle es vital para evitar atascos."
+    },
+    {
+      "title": "Estados del Muelle",
+      "type": "patchouli:text",
+      "text": "$(2)Libre (Verde):$() Listo para recibir globos entrantes.$(br)$(4)Ocupado (Rojo):$() Actualmente sostiene un envío que ha aterrizado."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/dock_reset.png"
+      ],
+      "title": "Desatascar un Muelle",
+      "border": true,
+      "text": "Si un globo se estrella o los datos se desincronizan, un muelle podría quedarse bloqueado en estado 'Reservado'. Simplemente haz $(2)Shift + Clic Derecho$() con una $(2)Mano Vacía$() sobre el muelle para forzar su reinicio y limpiar la red."
+    },
+    {
+      "title": "Recuerda",
+      "type": "patchouli:text",
+      "text": "Siempre recuerda mantener un $(2)área vertical libre de 3x3$() sobre tus muelles. Si se colocan bloques en su ruta de vuelo después de configurarlo, los globos entrantes abortarán el aterrizaje, entrarán en estado de emergencia y esperarán tu intervención."
+    }
+  ]
+}

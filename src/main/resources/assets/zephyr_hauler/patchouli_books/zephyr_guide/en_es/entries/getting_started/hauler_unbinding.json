@@ -1,0 +1,22 @@
+{
+  "name": "Reinicio y Desvinculación",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:compass",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A veces los planes cambian, o un globo se queda atascado en un vínculo que ya no existe. Si necesitas borrar los datos de destino de tu Globo Zephyr, puedes $(2)Desvincularlo$() en cualquier momento."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:unbind_zephyr_hauler",
+      "text": "Simplemente pon tu globo vinculado en cualquier parte de una $(2)Mesa de Trabajo$(). Esta acción borra la memoria de navegación de forma segura."
+    },
+    {
+      "title": "Resultado",
+      "type": "patchouli:text",
+      "text": "El globo regresará a un estado $(2)Sin vincular$(), listo para ser programado a un nuevo muelle de destino. Todas tus $(2)Mejoras$(), $(2)Color$() y estadísticas de $(2)Durabilidad$() se mantendrán perfectamente intactas durante este proceso."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "Personalización del Globo",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:magenta_dye",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "¡Tu flota puede lucir espectacular! Cada Globo Zephyr usa $(2)Lana de Color$() para la tela de su globo, permitiéndote codificar por colores tu red logística por destino o tipo de producto."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_white",
+      "text": "El Globo Blanco estándar. Un lienzo en blanco para tu red."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_red",
+      "text": "Globo Rojo: Usado frecuentemente para minerales pesados o materiales de construcción."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_blue",
+      "text": "Globo Azul: Ideal para fluidos y recursos preciosos embotellados."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_green",
+      "text": "Globo Verde: Perfectamente adaptado para bienes agrícolas y comida."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_yellow",
+      "text": "Globo Amarillo: Genial para logística de alta visibilidad o ítems ligeros."
+    },
+    {
+      "title": "Re-pintar",
+      "type": "patchouli:text",
+      "text": "Si ya tienes un globo pero quieres cambiar su color, puedes re-pintarlo colocándolo en una $(2)Mesa de Crafteo$() con el tinte deseado. ¡Esto mantiene intactas todas tus mejoras actuales y datos de vínculo!"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/redying.png"
+      ],
+      "title": "Re-pintando un globo",
+      "border": true
+    }
+  ]
+}

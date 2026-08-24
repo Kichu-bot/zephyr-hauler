@@ -1,0 +1,57 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "idle": {
+      "loop": true,
+      "animation_length": 1.0,
+      "bones": {
+        "Girar": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "1.0": [0, 360, 0]
+          }
+        }
+      }
+    },
+    "north": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, 0, 0] } }
+    },
+    "north_east": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -45, 0] } }
+    },
+    "east": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -90, 0] } }
+    },
+    "south_east": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -135, 0] } }
+    },
+    "south": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -180, 0] } }
+    },
+    "south_west": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -225, 0] } }
+    },
+    "west": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -270, 0] } }
+    },
+    "north_west": {
+      "loop": false,
+      "animation_length": 2.5,
+      "bones": { "Girar": { "rotation": [0, -315, 0] } }
+    }
+  }
+}

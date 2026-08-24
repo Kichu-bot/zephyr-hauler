@@ -1,0 +1,31 @@
+{
+  "name": "Peso Dinámico",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:anvil",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "¡Las físicas aplican a tu flota! El Globo Zephyr cuenta con un sistema de $(2)Peso Dinámico$(). Mientras más ítems tengas guardados dentro del cofre, barril o máquina que transportas, más pesada se vuelve la carga."
+    },
+    {
+      "title": "Penalizaciones de Peso",
+      "type": "patchouli:text",
+      "text": "$(2)Ligero/Medio:$() Seguro y rápido.$(br)$(2)Pesado/Sobrecargado:$() Ascenso lento. 30% de probabilidad de recibir daño estructural al aterrizar por la alta inercia.$(br)$(4)Colosal (>54 Stacks):$() Apenas vuela. Cae como un yunque y recibe $(4)daño severo garantizado$() sin las mejoras adecuadas."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/heavy_cargo.png"
+      ],
+      "title": "Densidad de Carga",
+      "border": true,
+      "text": "*(Espacio reservado)* Mantén un ojo en qué tan llenos están los contenedores transportados; el peso se calcula dinámicamente bloque por bloque."
+    },
+    {
+      "title": "Contrarrestar el Peso:",
+      "type": "patchouli:text",
+      "text": "Si debes mover envíos masivos de recursos pesados, compensa la resistencia quemando combustibles de alto nivel como $(2)Arena de Almas$() o $(2)Cargas de Viento$(), o instala permanentemente la mejora $(2)Aerodinámica$()."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "Mejoras Permanentes",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:phantom_membrane",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Puedes modificar permanentemente tus globos combinándolos con materiales especiales en cualquier $(2)Mesa de Trabajo$(). Puesto que se aplican sin forma, simplemente pon tu globo y el material en cualquier lugar de la cuadrícula."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:iron_ingot",
+      "title": "Reforzado",
+      "text": "Añadir cualquier $(2)Lingote de Hierro$() a tu globo aumenta su durabilidad máxima, permitiéndole soportar $(2)12 viajes$() en lugar de los 8 estándar. Crucial para llevar cargas pesadas."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:phantom_membrane",
+      "title": "Aerodinámico",
+      "text": "Coser una $(2)Membrana de Fantasma$() a la tela optimiza el flujo de aire, otorgándole al globo un bono pasivo de velocidad del $(2)+25%$() en todos los vuelos."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:honeycomb",
+      "title": "Encerado",
+      "text": "Cubrir el globo con un $(2)Panal$() impermeabiliza toda la estructura, evitando el doble desgaste de durabilidad al volar bajo la $(2)Lluvia$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:lightning_rod",
+      "title": "Aislado",
+      "text": "Conectar un $(2)Pararrayos$() a la cesta protege los sensibles sistemas de navegación, haciendo al globo inmune al daño por $(2)Tormentas$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:shulker_shell",
+      "title": "Flotabilidad",
+      "text": "Instalar un $(2)Caparazón de Shulker$() le otorga propiedades antigravedad al globo. Esto reduce de forma efectiva el Nivel de Peso de la carga en 1, permitiendo que cargas masivas vuelen como si fuesen mucho más ligeras."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:slime_block",
+      "title": "Amortiguadores",
+      "text": "Añadir un $(2)Bloque de Slime$() crea amortiguadores para la cesta. Esto $(2)anula por completo el daño por impacto$() cuando globos pesados o sobrecargados se estrellan contra el muelle al aterrizar."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:magma_block",
+      "title": "Sobrealimentado",
+      "text": "Integrar un $(2)Bloque de Magma$() crea un Quemador Sobrealimentado. Esto $(2)aumenta tu nivel de combustible en 1$(), lo que significa que el Carbón básico te dará el poder de elevación extremo del Polvo de Blaze."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:netherite_ingot",
+      "title": "Placas de Netherita",
+      "text": "Forjar un $(2)Lingote de Netherita$() en la estructura crea el globo definitivo. Este revestimiento pesado extiende la durabilidad máxima a unos masivos $(2)32 viajes$().$(br)$(br)Nota: El globo ya debe tener la mejora $(2)Reforzado$() para aceptar esto."
+    }
+  ]
+}

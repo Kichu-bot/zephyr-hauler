@@ -1,0 +1,36 @@
+{
+  "name": "Combustibles y Velocidad",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:wind_charge",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El quemador de un globo necesita calor para levantar la carga. Puedes lanzar un globo con la $(2)Mano Vacía$(), pero el viaje será lento ($(2)x0.5 de velocidad$()). Si tienes prisa, puedes darle combustibles especiales al globo anclado dándole clic derecho."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:coal",
+      "title": "Vuelo Estándar",
+      "text": "Usar $(2)Carbón$() o Algas Secas calienta el quemador a niveles operativos normales, otorgando un multiplicador de velocidad de vuelo estándar de $(2)x1.0$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:blaze_powder",
+      "title": "Vuelo Rápido",
+      "text": "Usar $(2)Polvo de Blaze$() o Crema de Magma aumenta el calor significativamente, otorgando un multiplicador de velocidad de vuelo rápido de $(2)x1.5$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:soul_sand",
+      "title": "Vuelo Veloz",
+      "text": "Alimentar el quemador con energía del Nether usando $(2)Arena de Almas$() proporciona un poderoso multiplicador de velocidad de vuelo veloz de $(2)x2.0$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:wind_charge",
+      "title": "Vuelo Cohete",
+      "text": "Usar una explosiva $(2)Carga de Viento$() o Pólvora convierte al globo en un cohete, otorgando el máximo multiplicador de velocidad absoluto de $(2)x3.0$()."
+    }
+  ]
+}

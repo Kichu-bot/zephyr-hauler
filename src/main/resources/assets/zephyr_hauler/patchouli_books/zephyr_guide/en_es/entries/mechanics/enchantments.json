@@ -1,0 +1,19 @@
+{
+  "name": "Encantamientos",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "minecraft:enchanting_table",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Refuerzos Místicos",
+      "text": "Dado que los Globos Zephyr dependen de componentes estructurales especializados en lugar de la durabilidad estándar de una herramienta, rechazan casi toda la magia tradicional.$(br)$(br)Sin embargo, $(2)puedes$() encantarlos con $(2)Irrompibilidad (I - III)$() usando una Mesa de Encantamientos o un Yunque."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:enchanted_book",
+      "title": "Sinergia de Irrompibilidad",
+      "text": "Irrompibilidad otorga una alta probabilidad de ignorar por completo el daño de durabilidad durante un vuelo o un aterrizaje brusco.$(br)$(br)Cuando se combina con las $(2)Placas de Netherita$(), un globo con $(2)Irrompibilidad III$() puede promediar más de $(2)120 viajes seguros$() antes de necesitar una Estación de Mantenimiento."
+    }
+  ]
+}

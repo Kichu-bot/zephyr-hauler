@@ -1,0 +1,31 @@
+{
+  "name": "Dock Management",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_dock",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Logistics networks require maintenance. Sometimes a hauler might get interrupted, or you might want to repurpose an old destination. Knowing how a dock behaves is vital to avoid jams."
+    },
+    {
+      "title": "Dock States",
+      "type": "patchouli:text",
+      "text": "$(2)Free (Green):$() Ready to receive incoming haulers.$(br)$(4)Occupied (Red):$() Currently holding a landed shipment."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/dock_reset.png"
+      ],
+      "title": "Unsticking a Dock",
+      "border": true,
+      "text": "If a hauler crashes or data gets desynced, a dock might remain locked in 'Reserved' status. Simply $(2)Shift + Right-Click$() with an $(2)Empty Hand$() on the dock to force-reset it and clear the network."
+    },
+    {
+      "title": "Remember",
+      "type": "patchouli:text",
+      "text": "Always remember to keep a $(2)3x3 clear vertical area$() above your docks. If blocks are placed in its flight path post-setup, incoming haulers will abort landing, enter an emergency state, and wait for your intervention."
+    }
+  ]
+}

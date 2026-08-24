@@ -1,0 +1,44 @@
+{
+  "name": "Daño y Reparación",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:zephyr_station",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Los globos soportan mucho estrés. Un globo estándar puede hacer hasta $(2)8 viajes$() antes de romperse. Sin embargo, volar en mal clima es muy castigador: La $(4)Lluvia$() consume 2 usos por viaje, y las $(4)Tormentas$() consumen 3. Ten cuidado con el $(8)humo negro$(); significa que tu globo está a punto de fallar."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_station",
+      "text": "Si la durabilidad llega a cero en pleno vuelo, el globo se estrellará y quedará $(4)inoperable$(). Para regresarlo al cielo, debes repararlo en una $(2)Estación de Mantenimiento$()."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step1_place.png"
+      ],
+      "title": "Paso 1: Colocación",
+      "border": true,
+      "text": "Sostén el globo roto en tu mano y haz $(2)Clic Derecho$() en la Estación de Mantenimiento para colocarlo en la plataforma de reparación."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step2_inspect.png"
+      ],
+      "title": "Paso 2: Diagnóstico",
+      "border": true,
+      "text": "Con una $(2)Mano Vacía$(), haz Clic Derecho en la estación. El sistema analizará el globo y te dirá el daño específico (ej., Quemador Obstruido, Tela Rasgada)."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/step3_repair.png"
+      ],
+      "title": "Paso 3: Reparación",
+      "border": true,
+      "text": "Sostén el material requerido ($(2)Hilo$(), $(2)Hierro$(), $(2)Lana$(), etc.) y haz Clic Derecho para arreglar el daño. Finalmente, haz $(2)Shift + Clic Derecho$() para recuperar tu globo como nuevo."
+    }
+  ]
+}

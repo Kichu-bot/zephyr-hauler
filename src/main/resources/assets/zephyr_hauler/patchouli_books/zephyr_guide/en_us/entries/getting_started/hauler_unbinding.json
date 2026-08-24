@@ -1,0 +1,22 @@
+{
+  "name": "Resetting & Unbinding",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:compass",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Sometimes plans change, or a hauler gets stuck in a link that no longer exists. If you need to clear the destination data from your Zephyr Hauler, you can $(2)Unbind$() it at any time."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:unbind_zephyr_hauler",
+      "text": "Simply place your linked hauler anywhere in a $(2)Crafting Table$(). This action wipes the navigation memory safely."
+    },
+    {
+      "title": "Result",
+      "type": "patchouli:text",
+      "text": "The hauler will return to an $(2)Unlinked$() state, ready to be programmed to a new destination dock. All your existing $(2)Upgrades$(), $(2)Color$(), and $(2)Durability$() stats will remain perfectly intact during this process."
+    }
+  ]
+}

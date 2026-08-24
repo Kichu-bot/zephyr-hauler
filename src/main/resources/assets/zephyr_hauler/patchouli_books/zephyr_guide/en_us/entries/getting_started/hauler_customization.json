@@ -1,0 +1,50 @@
+{
+  "name": "Hauler Customization",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:magenta_dye",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Your fleet can look spectacular! Each Zephyr Hauler uses $(2)Colored Wool$() for its balloon fabric, allowing you to color-code your logistics network by destination or product type."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_white",
+      "text": "The standard White Hauler. A blank canvas for your network."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_red",
+      "text": "Red Hauler: Often used for heavy ore or construction materials."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_blue",
+      "text": "Blue Hauler: Ideal for fluids and precious bottled resources."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_green",
+      "text": "Green Hauler: Perfectly suited for agricultural goods and food."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hauler_yellow",
+      "text": "Yellow Hauler: Great for high-visibility logistics or light items."
+    },
+    {
+      "title": "Re-dyeing",
+      "type": "patchouli:text",
+      "text": "If you already have a hauler but want to change its color, you can re-dye it by placing it in a $(2)Crafting Table$() with the desired dye. This keeps all your current upgrades and link data intact!"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/redying.png"
+      ],
+      "title": "Re-dyeing a hauler",
+      "border": true
+    }
+  ]
+}

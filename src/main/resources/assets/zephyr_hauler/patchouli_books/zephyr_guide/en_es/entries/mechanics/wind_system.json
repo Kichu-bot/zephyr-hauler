@@ -1,0 +1,38 @@
+{
+  "name": "Viento y Clima",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:wind_meter",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El cielo es un lugar volátil e impredecible. Tu flota de transporte está completamente a merced de las condiciones atmosféricas. Mientras que los cielos despejados ofrecen brisas suaves, el clima severo lo cambia todo."
+    },
+    {
+      "title": "Condiciones Climáticas:",
+      "type": "patchouli:text",
+      "text": "$(2)Cielos Despejados:$() Corrientes calmadas, ideales para envíos estándar y seguros.$(br)$(4)Lluvia:$() Genera turbulencia moderada y acelera el desgaste del globo.$(br)$(4)Tormentas:$() Vendavales violentos y riesgo de relámpagos; muy peligroso para la mercancía frágil."
+    },
+    {
+      "title": "Vientos a Favor:",
+      "type": "patchouli:text",
+      "text": "Viajar en la misma dirección que la corriente de viento atrapa la tela del globo, otorgando un masivo $(2)Aumento de Velocidad$() que acorta el tiempo de viaje significativamente."
+    },
+    {
+      "title": "Vientos en Contra:",
+      "type": "patchouli:text",
+      "text": "Forzar a tu globo a volar directamente contra vientos fuertes opuestos resulta en una severa $(4)Penalización de Velocidad$(), reduciendo la eficiencia y consumiendo valiosa durabilidad de viaje."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:wind_meter",
+      "title": "Dirección del Viento",
+      "text": "Comprueba siempre la dirección del viento con tu Giralda antes de lanzar envíos pesados para asegurarte de volar con las corrientes en lugar de en su contra."
+    },
+    {
+      "title": "Dinámicas de Altitud:",
+      "type": "patchouli:text",
+      "text": "Las corrientes de viento cambian dependiendo de la elevación de tu muelle de salida:$(br)$(2)Picos Altos (Y > 128):$() Expone a tu globo a las poderosas corrientes atmosféricas superiores, potenciando todos los efectos del viento en un $(2)50%$().$(br)$(4)Valles Bajos (Y < 60):$() Las montañas y el terreno bloquean la brisa, reduciendo la influencia del viento en un $(4)50%$()."
+    }
+  ]
+}

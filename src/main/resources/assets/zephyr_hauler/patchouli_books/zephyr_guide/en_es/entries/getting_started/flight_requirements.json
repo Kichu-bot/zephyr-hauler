@@ -1,0 +1,43 @@
+{
+  "name": "Requisitos de Vuelo",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "minecraft:scaffolding",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Antes de lanzar un Globo Zephyr, debes asegurarte de que su trayectoria de vuelo esté completamente despejada. Los globos son estructuras masivas y requieren un espacio estrictamente libre para ascender de forma segura a la atmósfera."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_dock",
+      "text": "El $(item)Muelle Zephyr$() es el bloque de destino fundamental para tu red. Actúa como una plataforma de aterrizaje segura para recibir globos y su mercancía. Haz clic derecho a un muelle vacío para asignarle un nombre único."
+    },
+    {
+      "title": "Área Requerida",
+      "type": "patchouli:text",
+      "text": "$(2)El Espacio de 3x3:$()$(br)Un globo requiere un $(2)área libre de 3x3 bloques$() centrada directamente sobre el muelle y extendiéndose hacia arriba. Si cualquier bloque sólido, rama de árbol o pared se interpone en esta columna, el lanzamiento se abortará."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/flight_clearance.png"
+      ],
+      "title": "Zona de Despeje",
+      "border": true
+    },
+    {
+      "title": "Altitud Requerida",
+      "type": "patchouli:text",
+      "text": "$(2)Requisito de Altitud$() 60 Bloques$(br)El globo debe tener un camino vertical libre de obstáculos hacia arriba durante una distancia de al menos $(2)60 bloques$() hacia el límite del cielo. Si un techo o una montaña bloquea esta trayectoria, el sistema activará una advertencia de $(4)Camino Bloqueado$()."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/altitude_clearance.png"
+      ],
+      "title": "Zona de Despeje",
+      "border": true
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Giralda",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:wind_meter",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Para dominar los cielos, un aviador siempre debe saber en qué dirección fluye el aire. La $(2)Giralda$() es una herramienta de ingeniería de mano esencial diseñada para leer las condiciones atmosféricas actuales y las corrientes de viento."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:wind_meter",
+      "text": "Aquí tienes la receta de fabricación estándar para la Giralda, que utiliza metales básicos, cobre y componentes estructurales."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:wind_meter",
+      "title": "Usando la Giralda",
+      "text": "Haz clic derecho al aire con la Giralda en la mano para medir instantáneamente la intensidad y dirección del clima. Te informará de si hay una brisa suave, viento fuerte o huracán, permitiéndote planificar envíos pesados."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/wind_vane_use.png"
+      ],
+      "title": "Leyendo el Viento",
+      "text": "Cuando se utiliza con éxito, aparecerá una notificación en el chat mostrando la dirección precisa y velocidad de las corrientes de viento a tu alrededor."
+    }
+  ]
+}

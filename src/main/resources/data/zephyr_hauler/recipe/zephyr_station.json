@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IS",
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "S": { "item": "minecraft:shears" },
+    "P": { "tag": "minecraft:planks" }
+  },
+  "result": { "id": "zephyr_hauler:zephyr_station" }
+}

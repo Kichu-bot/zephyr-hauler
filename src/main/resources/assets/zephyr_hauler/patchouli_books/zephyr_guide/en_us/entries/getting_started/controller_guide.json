@@ -1,0 +1,42 @@
+{
+  "name": "Zephyr Controller",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_controller",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(2)Zephyr Controller$() is the brain of your shipping empire. Without it, your haulers have no idea where to deliver their cargo. It acts as a portable remote and address book for all your stations."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_controller",
+      "text": "Crafting the controller requires refined iron ingots, redstone components, and specialized structural parts."
+    },
+    {
+      "title": "Registering a Dock",
+      "type": "patchouli:text",
+      "text": "To save a destination, approach any placed Zephyr Dock and perform a $(2)Shift + Click$() with the Controller in hand. The device will store the dock's exact name, dimensions, and coordinates."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/controller_register.png"
+      ],
+      "title": "Registering a Dock",
+      "border": true,
+      "text": "When successfully linked, a confirmation message will pop up in your chat indicating the dock has been added to the controller's memory."
+    },
+    {
+      "title": "Selecting Destinations",
+      "type": "patchouli:text",
+      "text": "Right-click the air while holding the Controller to open its management GUI. Here you can review all saved docks, check their current status, and select your active target."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:zephyr_hauler",
+      "title": "Linking the Hauler",
+      "text": "Once your destination is selected in the controller, perform a $(2)Shift + Right-Click$() with your Zephyr Hauler onto the target chest or machine to bind them together and launch!"
+    }
+  ]
+}

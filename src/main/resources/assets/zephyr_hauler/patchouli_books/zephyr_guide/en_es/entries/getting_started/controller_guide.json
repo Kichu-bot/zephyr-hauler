@@ -1,0 +1,42 @@
+{
+  "name": "Controlador Zephyr",
+  "category": "zephyr_hauler:getting_started",
+  "icon": "zephyr_hauler:zephyr_controller",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "El $(2)Controlador Zephyr$() es el cerebro de tu imperio logístico. Sin él, tus globos no sabrán dónde entregar su mercancía. Funciona como un mando a distancia portátil y una agenda de direcciones para todas tus estaciones."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_controller",
+      "text": "Crear el controlador requiere lingotes de hierro refinado, componentes de redstone y piezas estructurales especializadas."
+    },
+    {
+      "title": "Registrar un Muelle",
+      "type": "patchouli:text",
+      "text": "Para guardar un destino, acércate a cualquier Muelle Zephyr colocado y haz $(2)Shift + Clic$() con el Controlador en la mano. El dispositivo almacenará el nombre exacto, la dimensión y las coordenadas del muelle."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/controller_register.png"
+      ],
+      "title": "Registrar un Muelle",
+      "border": true,
+      "text": "Cuando se vincule con éxito, aparecerá un mensaje de confirmación en tu chat indicando que el muelle se ha añadido a la memoria del controlador."
+    },
+    {
+      "title": "Seleccionar Destinos",
+      "type": "patchouli:text",
+      "text": "Haz clic derecho al aire mientras sostienes el Controlador para abrir su interfaz de gestión. Aquí puedes revisar todos los muelles guardados, comprobar su estado actual y seleccionar tu objetivo activo."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "zephyr_hauler:zephyr_hauler",
+      "title": "Vincular el Globo",
+      "text": "Una vez que tu destino esté seleccionado en el controlador, haz $(2)Shift + Clic Derecho$() con tu Globo Zephyr sobre el cofre o máquina objetivo para vincularlos ¡y despegar!"
+    }
+  ]
+}

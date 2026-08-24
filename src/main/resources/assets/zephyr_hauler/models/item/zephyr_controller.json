@@ -1,0 +1,125 @@
+{
+	"parent": "minecraft:builtin/entity",
+	"gui_light": "front",
+	"textures": {
+		"particle": "zephyr_hauler:item/zephyr_controller"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"firstperson_righthand": {
+			"rotation": [
+				54,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				3.25,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"firstperson_lefthand": {
+			"rotation": [
+				54,
+				0,
+				0
+			],
+			"translation": [
+				-6,
+				3.25,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"ground": {
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"gui": {
+			"rotation": [
+				81.61,
+				-8.92,
+				36.35
+			],
+			"translation": [
+				6,
+				0,
+				0
+			]
+		},
+		"fixed": {
+			"rotation": [
+				90,
+				0,
+				-180
+			],
+			"translation": [
+				0.25,
+				0,
+				-7.25
+			]
+		},
+		"on_shelf": {
+			"rotation": [
+				90,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				4
+			]
+		}
+	}
+}
