@@ -12,7 +12,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:iron_ingot",
       "title": "Reinforced",
-      "text": "Adding any $(2)Iron Ingot$() to your hauler increases its maximum durability, allowing it to withstand $(2)12 trips$() instead of the standard 8. Crucial for carrying heavy loads."
+      "text": "Adding any $(2)Iron Ingot$() to your hauler increases its maximum durability, allowing it to withstand $(2)12 MAX Integrity() instead of the standard 8. Crucial for carrying heavy loads."
     },
     {
       "type": "patchouli:spotlight",
@@ -54,7 +54,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:netherite_ingot",
       "title": "Netherite Plating",
-      "text": "Forging a $(2)Netherite Ingot$() onto the frame creates the ultimate hauler. This heavy plating extends the maximum durability to a massive $(2)32 trips$().$(br)$(br)Note: The hauler must already have the $(2)Reinforced$() upgrade to accept this."
+      "text": "Forging a $(2)Netherite Ingot$() onto the frame creates the ultimate hauler. This heavy plating extends the maximum durability to a massive $(2)32 MAX Integrity().$(br)$(br)Note: The hauler must already have the $(2)Reinforced$() upgrade to accept this."
     }
   ]
 }

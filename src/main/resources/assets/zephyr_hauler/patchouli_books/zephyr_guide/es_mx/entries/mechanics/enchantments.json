@@ -13,7 +13,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:enchanted_book",
       "title": "Sinergia de Irrompibilidad",
-      "text": "Irrompibilidad otorga una alta probabilidad de ignorar por completo el daño de durabilidad durante un vuelo o un aterrizaje brusco.$(br)$(br)Cuando se combina con las $(2)Placas de Netherita$(), un globo con $(2)Irrompibilidad III$() puede promediar más de $(2)120 viajes seguros$() antes de necesitar una Estación de Mantenimiento."
+      "text": "Irrompibilidad otorga una alta probabilidad de ignorar por completo el daño de durabilidad durante un vuelo o un aterrizaje brusco.$(br)$(br)Cuando se combina con las $(2)Placas de Netherita$(), un globo con $(2)Irrompibilidad III$() puede promediar más de $(2)120 de integridad max() antes de necesitar una Estación de Mantenimiento."
     }
   ]
 }

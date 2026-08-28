@@ -12,7 +12,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:iron_ingot",
       "title": "Reforzado",
-      "text": "Añadir cualquier $(2)Lingote de Hierro$() a tu globo aumenta su durabilidad máxima, permitiéndole soportar $(2)12 viajes$() en lugar de los 8 estándar. Crucial para llevar cargas pesadas."
+      "text": "Añadir cualquier $(2)Lingote de Hierro$() a tu globo aumenta su durabilidad máxima, permitiéndole soportar $(2)12 de integridad max() en lugar de los 8 estándar. Crucial para llevar cargas pesadas."
     },
     {
       "type": "patchouli:spotlight",
@@ -54,7 +54,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:netherite_ingot",
       "title": "Placas de Netherita",
-      "text": "Forjar un $(2)Lingote de Netherita$() en la estructura crea el globo definitivo. Este revestimiento pesado extiende la durabilidad máxima a unos masivos $(2)32 viajes$().$(br)$(br)Nota: El globo ya debe tener la mejora $(2)Reforzado$() para aceptar esto."
+      "text": "Forjar un $(2)Lingote de Netherita$() en la estructura crea el globo definitivo. Este revestimiento pesado extiende la durabilidad máxima a unos masivos $(2)32 de integridad max().$(br)$(br)Nota: El globo ya debe tener la mejora $(2)Reforzado$() para aceptar esto."
     }
   ]
 }

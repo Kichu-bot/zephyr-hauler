@@ -65,4 +65,10 @@ public class ZephyrDataComponents {
                     .persistent(Codec.STRING.listOf())
                     .networkSynchronized(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()))
                     .build());
+
+    public static final Supplier<DataComponentType<String>> PREVENTIVE_REQ =
+            COMPONENTS.register("preventive_req", () -> DataComponentType.<String>builder()
+                    .persistent(Codec.STRING)
+                    .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+                    .build());
 }

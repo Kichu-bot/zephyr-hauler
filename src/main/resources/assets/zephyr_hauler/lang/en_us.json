@@ -9,8 +9,8 @@
   "block.zephyr_hauler.zephyr_station": "Maintenance Station",
 
   "tooltip.zephyr_hauler.color": "Color: %s",
-  "tooltip.zephyr_hauler.durability": "Durability: %s/8 trips",
-  "tooltip.zephyr_hauler.durability_dynamic": "Durability: %s/%s trips",
+  "tooltip.zephyr_hauler.durability": "Integrity: %s/8",
+  "tooltip.zephyr_hauler.durability_dynamic": "Integrity: %s/%s",
   "tooltip.zephyr_hauler.inoperable": "INOPERABLE!",
   "tooltip.zephyr_hauler.damage_cause": "Cause: %s",
   "tooltip.zephyr_hauler.upgrade_format": "✦ %s",
@@ -32,7 +32,7 @@
   "upgrade.zephyr_hauler.waxed": "Waxed (Rain Immune)",
   "upgrade.zephyr_hauler.lightning_proof": "Insulated (Storm Immune)",
   "upgrade.zephyr_hauler.aerodynamic": "Aerodynamic (Fast Flight)",
-  "upgrade.zephyr_hauler.reinforced": "Reinforced (12 Max Trips)",
+  "upgrade.zephyr_hauler.reinforced": "Reinforced (12 Max Integrity )",
   "upgrade.zephyr_hauler.shulker_buoyancy": "Buoyancy (-1 Weight Tier)",
   "upgrade.zephyr_hauler.shock_absorbers": "Shock Absorbers (Impact Immune)",
   "upgrade.zephyr_hauler.supercharged_burner": "Supercharged (+1 Fuel Tier)",
@@ -55,10 +55,6 @@
 
   "message.zephyr_hauler.dock_reset": "The dock has been reset and is free again.",
 
-  "message.zephyr_hauler.station_repaired": "Hauler successfully repaired! Ready to fly.",
-  "message.zephyr_hauler.station_good_condition": "The hauler is in good condition (%s/8 uses).",
-  "message.zephyr_hauler.station_damaged": "The hauler is broken. You need %s to repair it.",
-
   "material.zephyr_hauler.wool": "Wool (Any color)",
   "material.zephyr_hauler.string": "String",
   "material.zephyr_hauler.iron": "Iron Ingot",
@@ -68,7 +64,35 @@
   "material.zephyr_hauler.leather": "Leather",
   "material.zephyr_hauler.sponge_or_slime": "Sponge or Slimeball",
   "material.zephyr_hauler.iron_nugget": "Iron Nugget",
+  "material.zephyr_hauler.netherite_scrap": "Netherite Scrap",
   "material.zephyr_hauler.unknown": "Unknown Material",
+  "material.zephyr_hauler.any_wool": "Wool (Any color)",
+  "material.zephyr_hauler.flint": "Flint",
+  "material.zephyr_hauler.coal": "Coal",
+  "material.zephyr_hauler.chain": "Chain",
+  "material.zephyr_hauler.redstone": "Redstone Dust",
+  "material.zephyr_hauler.blaze_powder": "Blaze Powder",
+  "material.zephyr_hauler.magma_cream": "Magma Cream",
+
+  "message.zephyr_hauler.station_critical_repaired": "Critical fault cleared. Integrity is at 1%.",
+  "message.zephyr_hauler.station_wrong_material": "Wrong material. You need: %s",
+  "message.zephyr_hauler.station_fully_repaired": "Integrity at 100%. Hauler is ready for launch!",
+  "message.zephyr_hauler.station_partial_repair": "Maintenance applied. Integrity is now at %s%%.",
+  "message.zephyr_hauler.station_critical_status": "INOPERABLE! Fault: %s. Requires: %s",
+  "message.zephyr_hauler.station_preventive_info": "Use %s to restore +25%% integrity.",
+
+  "feedback.zephyr_hauler.perfect_1": "Fabric is taut, burner is clean. Optimal condition.",
+  "feedback.zephyr_hauler.perfect_2": "All systems operational. Ready for heavy lifting.",
+  "feedback.zephyr_hauler.perfect_3": "Immaculate condition. Not a single scratch.",
+  "feedback.zephyr_hauler.good_1": "Slight wear on the anchor straps, but within safe limits.",
+  "feedback.zephyr_hauler.good_2": "Burner has minor soot, otherwise flying perfectly.",
+  "feedback.zephyr_hauler.good_3": "A few frayed threads. Nothing to worry about yet.",
+  "feedback.zephyr_hauler.warn_1": "Burner is clogging up and seams are stretching. Needs maintenance soon.",
+  "feedback.zephyr_hauler.warn_2": "Noticeable structural fatigue. Avoid heavy loads.",
+  "feedback.zephyr_hauler.warn_3": "The anchor ring is bending. Preventive repair advised.",
+  "feedback.zephyr_hauler.critical_1": "DANGER! Straps are tearing and the burner is failing.",
+  "feedback.zephyr_hauler.critical_2": "Critical fatigue detected! One bad landing away from total failure.",
+  "feedback.zephyr_hauler.critical_3": "Massive air leaks. Do not launch without immediate repairs.",
 
   "gui.zephyr_hauler.button.link": "Link Hauler",
   "gui.zephyr_hauler.button.reset": "Reset Dock",
@@ -91,6 +115,7 @@
   "message.zephyr_hauler.entity.corrupt_data": "Incomplete or corrupt link data.",
   "message.zephyr_hauler.entity.path_blocked": "Path blocked. The hauler needs a 3x3 clear area upwards.",
   "message.zephyr_hauler.entity.launch_info": "Liftoff! | Weight: Tier %s | Fuel: Tier %s",
+  "message.zephyr_hauler.entity.landing_blocked": "Landing blocked. Clear the 3x3 area above the destination dock.",
 
   "dock.zephyr_hauler.generic_dock": "Generic Dock",
   "message.zephyr_hauler.controller.dock_updated": "Updated information for dock: %s",
@@ -137,7 +162,12 @@
   "book.zephyr_hauler.name": "Zephyr Aviation Manual",
   "book.zephyr_hauler.landing": "Welcome to the world of automated air transport. This manual will teach you how to master the winds, build logistic networks, and keep your fleet safe from storms.",
 
-  "upgrade.zephyr_hauler.netherite_plating": "Netherite Plating (32 Max Trips)",
+  "upgrade.zephyr_hauler.netherite_plating": "Netherite Plating (32 Max Integrity )",
 
-  "tooltip.zephyr_hauler.mending_joke": "Miguel O'Hara: Repairing this with XP is not a canon event..."
+  "tooltip.zephyr_hauler.mending_joke": "Miguel O'Hara: Repairing this with XP is not a canon event...",
+
+  "message.zephyr_hauler.wind.altitude.low": "(Low altitude: Weak currents)",
+  "message.zephyr_hauler.wind.altitude.high": "(High altitude: Optimal currents)",
+
+  "tooltip.zephyr_hauler.hold_alt": "[Hold ALT to view Upgrades]"
 }

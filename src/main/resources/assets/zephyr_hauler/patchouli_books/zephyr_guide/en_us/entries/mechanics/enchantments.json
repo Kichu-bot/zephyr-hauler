@@ -13,7 +13,7 @@
       "type": "patchouli:spotlight",
       "item": "minecraft:enchanted_book",
       "title": "Unbreaking Synergy",
-      "text": "Unbreaking grants a high chance to completely ignore durability damage during a flight or a rough landing.$(br)$(br)When combined with $(2)Netherite Plating$(), an $(2)Unbreaking III$() balloon can average over $(2)120 safe trips$() before needing a Maintenance Station."
+      "text": "Unbreaking grants a high chance to completely ignore durability damage during a flight or a rough landing.$(br)$(br)When combined with $(2)Netherite Plating$(), an $(2)Unbreaking III$() balloon can average over $(2)120 MAX Integrity() before needing a Maintenance Station."
     }
   ]
 }

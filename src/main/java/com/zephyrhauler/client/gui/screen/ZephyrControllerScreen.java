@@ -71,6 +71,12 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
         if (message != null && !message.isEmpty()) {
             this.feedbackMessage = message;
             this.feedbackTimer = 60;
+
+            if (message.contains("success")) {
+                this.minecraft.player.playSound(net.minecraft.sounds.SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5f, 1.0f);
+            } else if (message.contains("error")) {
+                this.minecraft.player.playSound(net.minecraft.sounds.SoundEvents.VILLAGER_NO, 1.0f, 1.0f);
+            }
         }
     }
 
@@ -202,12 +208,20 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
                 else if (currentDockStatus == 2) { statusText = Component.translatable("gui.zephyr_hauler.status.inaccessible").withStyle(ChatFormatting.GRAY); }
 
                 graphics.drawString(this.font, Component.translatable("gui.zephyr_hauler.status.prefix").append(" ").append(statusText), x - 117, y + 107, 0xFFFFFF);
+            }
 
-                if (this.feedbackTimer > 0 && !this.feedbackMessage.isEmpty()) {
-                    this.feedbackTimer--;
-                    graphics.fill(x - 120, y + 105, x - 4, y + 117, 0xFF333333);
-                    graphics.drawString(this.font, Component.translatable(this.feedbackMessage), x - 117, y + 107, 0xFFFF55);
-                }
+            if (this.feedbackTimer > 0 && !this.feedbackMessage.isEmpty()) {
+                this.feedbackTimer--;
+
+                Component msgComp = Component.translatable(this.feedbackMessage);
+                int msgWidth = this.font.width(msgComp);
+                int centerX = this.width / 2;
+                int msgY = y - 18;
+
+                graphics.fill(centerX - (msgWidth / 2) - 6, msgY - 3, centerX + (msgWidth / 2) + 6, msgY + 11, 0xCC000000);
+
+                int textColor = this.feedbackMessage.contains("error") ? 0xFF5555 : 0xFFFF55;
+                graphics.drawCenteredString(this.font, msgComp, centerX, msgY, textColor);
             }
         }
     }

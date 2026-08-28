@@ -9,8 +9,8 @@
   "block.zephyr_hauler.zephyr_station": "Estación de Mantenimiento",
 
   "tooltip.zephyr_hauler.color": "Color: %s",
-  "tooltip.zephyr_hauler.durability": "Durabilidad: %s/8 viajes",
-  "tooltip.zephyr_hauler.durability_dynamic": "Durabilidad: %s/%s viajes",
+  "tooltip.zephyr_hauler.durability": "Integridad: %s/8 viajes",
+  "tooltip.zephyr_hauler.durability_dynamic": "Integridad: %s/%s viajes",
   "tooltip.zephyr_hauler.inoperable": "¡INOPERABLE!",
   "tooltip.zephyr_hauler.damage_cause": "Causa: %s",
   "tooltip.zephyr_hauler.upgrade_format": "✦ %s",
@@ -27,7 +27,7 @@
   "damage.zephyr_hauler.broken_straps": "Correas de Anclaje Rotas",
   "damage.zephyr_hauler.soot_buildup": "Acumulación de Hollín",
   "damage.zephyr_hauler.deformed_ring": "Anillo Deformado",
-  "damage.zephyr_hauler.unknown": "Fallo Estructural Severo",
+  "damage.zephyr_hauler.unknown": "Falla Estructural Severa",
 
   "upgrade.zephyr_hauler.waxed": "Encerado (Inmune a la Lluvia)",
   "upgrade.zephyr_hauler.lightning_proof": "Aislado (Inmune a Tormentas)",
@@ -55,10 +55,6 @@
 
   "message.zephyr_hauler.dock_reset": "El muelle ha sido reiniciado y vuelve a estar libre.",
 
-  "message.zephyr_hauler.station_repaired": "¡Globo reparado con éxito! Listo para volar.",
-  "message.zephyr_hauler.station_good_condition": "El globo está en buenas condiciones (%s/8 usos).",
-  "message.zephyr_hauler.station_damaged": "El globo está roto. Necesitas %s para repararlo.",
-
   "material.zephyr_hauler.wool": "Lana (Cualquier color)",
   "material.zephyr_hauler.string": "Hilo",
   "material.zephyr_hauler.iron": "Lingote de Hierro",
@@ -68,7 +64,35 @@
   "material.zephyr_hauler.leather": "Cuero",
   "material.zephyr_hauler.sponge_or_slime": "Esponja o Bola de Slime",
   "material.zephyr_hauler.iron_nugget": "Pepita de Hierro",
+  "material.zephyr_hauler.netherite_scrap": "Chatarra de Netherita",
   "material.zephyr_hauler.unknown": "Material Desconocido",
+  "material.zephyr_hauler.any_wool": "Lana (Cualquier color)",
+  "material.zephyr_hauler.flint": "Pedernal",
+  "material.zephyr_hauler.coal": "Carbón",
+  "material.zephyr_hauler.chain": "Cadena",
+  "material.zephyr_hauler.redstone": "Polvo de Redstone",
+  "material.zephyr_hauler.blaze_powder": "Polvo de Blaze",
+  "material.zephyr_hauler.magma_cream": "Crema de Magma",
+
+  "message.zephyr_hauler.station_critical_repaired": "Falla crítica eliminada. Integridad al 1%.",
+  "message.zephyr_hauler.station_wrong_material": "Material incorrecto. Necesitas: %s",
+  "message.zephyr_hauler.station_fully_repaired": "Integridad al 100%. ¡Globo listo para volar!",
+  "message.zephyr_hauler.station_partial_repair": "Mantenimiento aplicado. Integridad actual al %s%%.",
+  "message.zephyr_hauler.station_critical_status": "¡INOPERABLE! Falla: %s. Requiere: %s",
+  "message.zephyr_hauler.station_preventive_info": "Usa %s para restaurar +25%% de integridad.",
+
+  "feedback.zephyr_hauler.perfect_1": "La tela está tensa y el quemador limpio. Condición óptima.",
+  "feedback.zephyr_hauler.perfect_2": "Todos los sistemas operativos. Listo para carga pesada.",
+  "feedback.zephyr_hauler.perfect_3": "Condición impecable. Ni un solo rasguño.",
+  "feedback.zephyr_hauler.good_1": "Ligero desgaste en las correas de anclaje, pero dentro de los límites seguros.",
+  "feedback.zephyr_hauler.good_2": "El quemador tiene un poco de hollín, por lo demás vuela perfecto.",
+  "feedback.zephyr_hauler.good_3": "Unos pocos hilos sueltos. Nada de qué preocuparse todavía.",
+  "feedback.zephyr_hauler.warn_1": "El quemador se está obstruyendo y las costuras ceden. Necesita mantenimiento pronto.",
+  "feedback.zephyr_hauler.warn_2": "Fatiga estructural notable. Evita cargas pesadas.",
+  "feedback.zephyr_hauler.warn_3": "El anillo de anclaje se está doblando. Se recomienda reparación preventiva.",
+  "feedback.zephyr_hauler.critical_1": "¡PELIGRO! Las correas se están rompiendo y el quemador falla.",
+  "feedback.zephyr_hauler.critical_2": "¡Fatiga crítica detectada! A un mal aterrizaje de la falla total.",
+  "feedback.zephyr_hauler.critical_3": "Fugas de aire masivas. No lanzar sin reparaciones inmediatas.",
 
   "gui.zephyr_hauler.button.link": "Vincular Globo",
   "gui.zephyr_hauler.button.reset": "Reiniciar Muelle",
@@ -91,6 +115,7 @@
   "message.zephyr_hauler.entity.corrupt_data": "Datos de vínculo incompletos o corruptos.",
   "message.zephyr_hauler.entity.path_blocked": "Camino bloqueado. El globo necesita un área libre de 3x3 hacia arriba.",
   "message.zephyr_hauler.entity.launch_info": "¡Despegue! | Peso: Nivel %s | Combustible: Nivel %s",
+  "message.zephyr_hauler.entity.landing_blocked": "Aterrizaje bloqueado. Despeja el área 3x3 sobre el muelle de destino.",
 
   "dock.zephyr_hauler.generic_dock": "Muelle Genérico",
   "message.zephyr_hauler.controller.dock_updated": "Información actualizada para el muelle: %s",
@@ -137,7 +162,12 @@
   "book.zephyr_hauler.name": "Manual de Aviación Zephyr",
   "book.zephyr_hauler.landing": "Bienvenido al mundo del transporte aéreo automatizado. Este manual te enseñará a dominar los vientos, construir redes logísticas y mantener tu flota a salvo de las tormentas.",
 
-  "upgrade.zephyr_hauler.netherite_plating": "Placas de Netherita (32 Viajes Máx)",
+  "upgrade.zephyr_hauler.netherite_plating": "Placas de Netherita (32 Máx integridad)",
 
-  "tooltip.zephyr_hauler.mending_joke": "Miguel O'Hara: Curar esto con XP no es un evento canónico..."
+  "tooltip.zephyr_hauler.mending_joke": "Miguel O'Hara: Curar esto con XP no es un evento canónico...",
+
+  "message.zephyr_hauler.wind.altitude.low": "(Baja altitud: Corrientes débiles)",
+  "message.zephyr_hauler.wind.altitude.high": "(Alta altitud: Corrientes óptimas)",
+
+  "tooltip.zephyr_hauler.hold_alt": "[Mantén ALT para ver las Mejoras]"
 }

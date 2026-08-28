@@ -59,9 +59,9 @@ public class ModNetwork {
                         BlockEntity be = targetLevel.getBlockEntity(payload.dockPos().pos());
 
                         if (be instanceof ZephyrDockBlockEntity dockBE) {
-                            if (payload.action() == 0) {
-                                ItemStack haulerStack = controllerMenu.haulerContainer.getItem(0);
+                            ItemStack haulerStack = controllerMenu.haulerContainer.getItem(0);
 
+                            if (payload.action() == 0) {
                                 if (haulerStack.isEmpty() || !(haulerStack.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem)) {
                                     PacketDistributor.sendToPlayer((ServerPlayer) player, new DockStatusResponsePayload(-1, "message.zephyr_hauler.controller.error_no_hauler"));
                                     return;
@@ -77,6 +77,8 @@ public class ModNetwork {
 
                                 UUID newLinkId = UUID.randomUUID();
                                 dockBE.setLinkId(newLinkId);
+                                dockBE.setChanged();
+
                                 haulerStack.set(ZephyrDataComponents.TARGET_POS.get(), payload.dockPos());
                                 haulerStack.set(ZephyrDataComponents.TARGET_NAME.get(), payload.dockName());
                                 haulerStack.set(ZephyrDataComponents.LINK_ID.get(), newLinkId);
@@ -87,6 +89,13 @@ public class ModNetwork {
                                 dockBE.setOccupied(false);
                                 dockBE.setPendingDeliveryData(null);
                                 dockBE.setLinkId(null);
+                                dockBE.setChanged();
+
+                                if (!haulerStack.isEmpty() && haulerStack.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem) {
+                                    haulerStack.remove(ZephyrDataComponents.TARGET_POS.get());
+                                    haulerStack.remove(ZephyrDataComponents.TARGET_NAME.get());
+                                    haulerStack.remove(ZephyrDataComponents.LINK_ID.get());
+                                }
 
                                 PacketDistributor.sendToPlayer((ServerPlayer) player, new DockStatusResponsePayload(0, "message.zephyr_hauler.controller.success_reset"));
                             }

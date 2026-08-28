@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Los globos soportan mucho estrés. Un globo estándar puede hacer hasta $(2)8 viajes$() antes de romperse. Sin embargo, volar en mal clima es muy castigador: La $(4)Lluvia$() consume 2 usos por viaje, y las $(4)Tormentas$() consumen 3. Ten cuidado con el $(8)humo negro$(); significa que tu globo está a punto de fallar."
+      "text": "Los globos soportan mucho estrés. Un globo estándar puede hacer hasta $(2)8 de integridad max() antes de romperse. Sin embargo, volar en mal clima es muy castigador: La $(4)Lluvia$() consume 2 usos por viaje, y las $(4)Tormentas$() consumen 3. Ten cuidado con el $(8)humo negro$(); significa que tu globo está a punto de fallar."
     },
     {
       "type": "patchouli:crafting",

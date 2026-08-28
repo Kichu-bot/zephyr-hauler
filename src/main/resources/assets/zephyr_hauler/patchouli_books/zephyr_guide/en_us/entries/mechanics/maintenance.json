@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Haulers endure a lot of stress. A standard balloon can make up to $(2)8 trips$() before breaking. However, flying in bad weather is punishing: $(4)Rain$() consumes 2 uses per trip, and $(4)Storms$() consume 3. Watch out for $(8)black smoke$(); it means your hauler is near failure."
+      "text": "Haulers endure a lot of stress. A standard balloon can make up to $(2)8 MAX Integrity() before breaking. However, flying in bad weather is punishing: $(4)Rain$() consumes 2 uses per trip, and $(4)Storms$() consume 3. Watch out for $(8)black smoke$(); it means your hauler is near failure."
     },
     {
       "type": "patchouli:crafting",

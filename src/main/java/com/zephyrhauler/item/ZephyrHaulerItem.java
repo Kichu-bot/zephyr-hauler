@@ -80,10 +80,21 @@ public class ZephyrHaulerItem extends Item implements GeoItem {
         if (stack.has(ZephyrDataComponents.HAULER_UPGRADES.get())) {
             List<String> upgrades = stack.get(ZephyrDataComponents.HAULER_UPGRADES.get());
             if (upgrades != null && !upgrades.isEmpty()) {
+
+                boolean isAltDown = false;
+                try {
+                    isAltDown = net.minecraft.client.gui.screens.Screen.hasAltDown();
+                } catch (Exception ignored) { }
+
                 tooltip.add(Component.literal(" "));
-                for (String upgrade : upgrades) {
-                    Component upgradeComp = Component.translatable("upgrade.zephyr_hauler." + upgrade);
-                    tooltip.add(Component.translatable("tooltip.zephyr_hauler.upgrade_format", upgradeComp).withStyle(ChatFormatting.AQUA));
+
+                if (isAltDown) {
+                    for (String upgrade : upgrades) {
+                        Component upgradeComp = Component.translatable("upgrade.zephyr_hauler." + upgrade);
+                        tooltip.add(Component.translatable("tooltip.zephyr_hauler.upgrade_format", upgradeComp).withStyle(ChatFormatting.AQUA));
+                    }
+                } else {
+                    tooltip.add(Component.translatable("tooltip.zephyr_hauler.hold_alt").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
                 }
             }
         }
