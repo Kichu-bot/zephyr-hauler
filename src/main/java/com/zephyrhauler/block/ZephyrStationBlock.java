@@ -69,7 +69,7 @@ public class ZephyrStationBlock extends BaseEntityBlock {
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
+    public RenderShape getRenderShape(BlockState state) { return RenderShape.ENTITYBLOCK_ANIMATED; }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new ZephyrStationBlockEntity(pos, state); }

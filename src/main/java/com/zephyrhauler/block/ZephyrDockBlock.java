@@ -6,18 +6,18 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter; // <-- Añadido
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block; // <-- Añadido
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext; // <-- Añadido
-import net.minecraft.world.phys.shapes.VoxelShape; // <-- Añadido
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -57,7 +57,7 @@ public class ZephyrDockBlock extends BaseEntityBlock {
 
     @Override
     protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -65,13 +65,15 @@ public class ZephyrDockBlock extends BaseEntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
 
         if (level.isClientSide() && placer instanceof net.minecraft.client.player.LocalPlayer) {
-            openNamingScreen(pos);
+            BlockEntity be = level.getBlockEntity(pos);
+            String currentName = (be instanceof ZephyrDockBlockEntity dockBE) ? dockBE.getCustomName() : "";
+            openNamingScreen(pos, currentName);
         }
     }
 
     @net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)
-    private void openNamingScreen(BlockPos pos) {
-        net.minecraft.client.Minecraft.getInstance().setScreen(new com.zephyrhauler.client.gui.screen.ZephyrDockNamingScreen(pos));
+    private void openNamingScreen(BlockPos pos, String currentName) {
+        net.minecraft.client.Minecraft.getInstance().setScreen(new com.zephyrhauler.client.gui.screen.ZephyrDockNamingScreen(pos, currentName));
     }
 
     @Override
@@ -96,7 +98,8 @@ public class ZephyrDockBlock extends BaseEntityBlock {
 
             else if (!player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
                 if (level.isClientSide) {
-                    openNamingScreen(pos);
+                    String currentName = dockBE.getCustomName();
+                    openNamingScreen(pos, currentName);
                 }
                 return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide);
             }

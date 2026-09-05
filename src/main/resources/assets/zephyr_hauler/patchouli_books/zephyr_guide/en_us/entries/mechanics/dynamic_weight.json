@@ -20,7 +20,7 @@
       ],
       "title": "Cargo Density",
       "border": true,
-      "text": "*(Placeholder)* Keep an eye on how full your transported containers are; weight is calculated dynamically block by block."
+      "text": "Keep an eye on how full your transported containers are; weight is calculated dynamically block by block."
     },
     {
       "title": "Countering Weight:",

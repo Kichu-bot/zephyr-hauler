@@ -169,5 +169,17 @@
   "message.zephyr_hauler.wind.altitude.low": "(Low altitude: Weak currents)",
   "message.zephyr_hauler.wind.altitude.high": "(High altitude: Optimal currents)",
 
-  "tooltip.zephyr_hauler.hold_alt": "[Hold ALT to view Upgrades]"
+  "tooltip.zephyr_hauler.hold_alt": "[Hold ALT to view Upgrades]",
+  "tooltip.zephyr_hauler.controller.hold_alt": "[Hold ALT to view Docks]",
+
+  "message.zephyr_hauler.controller.error_dock_replaced": "Error: This dock does not match the originally registered one.",
+
+  "gui.zephyr_hauler.dock_naming.current_name": "Current Name: ",
+  "gui.zephyr_hauler.dock_naming.unnamed": "Unnamed Dock",
+
+  "gui.zephyr_hauler.button.refresh": "Refresh Names",
+  "message.zephyr_hauler.controller.refreshing": "Syncing docks...",
+  "message.zephyr_hauler.controller.success_refresh": "Docks synchronized successfully!",
+  "message.zephyr_hauler.controller.no_changes": "Everything is up to date."
+
 }

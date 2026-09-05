@@ -10,8 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import org.jetbrains.annotations.Nullable;
 
-// --- IMPORTACIONES DE GECKOLIB ---
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -25,6 +28,7 @@ public class ZephyrDockBlockEntity extends BlockEntity implements GeoBlockEntity
     private boolean isOccupied = false;
     private CompoundTag pendingDeliveryData = null;
     private java.util.UUID linkId = null;
+    private java.util.UUID dockId = java.util.UUID.randomUUID();
 
     public ZephyrDockBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ZEPHYR_DOCK_BE.get(), pos, state);
@@ -39,6 +43,7 @@ public class ZephyrDockBlockEntity extends BlockEntity implements GeoBlockEntity
         return this.cache;
     }
     public java.util.UUID getLinkId() { return linkId; }
+    public java.util.UUID getDockId() { return this.dockId; }
     public void setLinkId(java.util.UUID linkId) { this.linkId = linkId; this.setChanged(); }
 
     public String getCustomName() {
@@ -74,6 +79,7 @@ public class ZephyrDockBlockEntity extends BlockEntity implements GeoBlockEntity
         if (this.linkId != null) {
             tag.putUUID("LinkId", this.linkId);
         }
+        tag.putUUID("DockId", this.dockId);
     }
 
     @Override
@@ -98,6 +104,10 @@ public class ZephyrDockBlockEntity extends BlockEntity implements GeoBlockEntity
             this.linkId = tag.getUUID("LinkId");
         } else {
             this.linkId = null;
+        }
+
+        if (tag.contains("DockId")) {
+            this.dockId = tag.getUUID("DockId");
         }
     }
 
@@ -136,5 +146,18 @@ public class ZephyrDockBlockEntity extends BlockEntity implements GeoBlockEntity
             this.pendingDeliveryData = null;
             this.setChanged();
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

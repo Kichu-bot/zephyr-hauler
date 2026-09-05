@@ -169,5 +169,16 @@
   "message.zephyr_hauler.wind.altitude.low": "(Baja altitud: Corrientes débiles)",
   "message.zephyr_hauler.wind.altitude.high": "(Alta altitud: Corrientes óptimas)",
 
-  "tooltip.zephyr_hauler.hold_alt": "[Mantén ALT para ver las Mejoras]"
+  "tooltip.zephyr_hauler.hold_alt": "[Mantén ALT para ver las Mejoras]",
+  "tooltip.zephyr_hauler.controller.hold_alt": "[Mantén ALT para ver los Muelles]",
+
+  "message.zephyr_hauler.controller.error_dock_replaced": "Error: Este muelle no coincide con el registrado originalmente.",
+
+  "gui.zephyr_hauler.dock_naming.current_name": "Nombre actual: ",
+  "gui.zephyr_hauler.dock_naming.unnamed": "Muelle sin nombre",
+
+  "gui.zephyr_hauler.button.refresh": "Sincronizar Nombres",
+  "message.zephyr_hauler.controller.refreshing": "Sincronizando...",
+  "message.zephyr_hauler.controller.success_refresh": "¡Muelles sincronizados!",
+  "message.zephyr_hauler.controller.no_changes": "Todo está al día."
 }

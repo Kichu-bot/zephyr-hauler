@@ -1,6 +1,7 @@
 package com.zephyrhauler.client.gui.screen;
 
 import com.zephyrhauler.ZephyrHauler;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -20,10 +21,12 @@ public class ZephyrDockNamingScreen extends Screen {
     private EditBox nameField;
     private Button saveButton;
     private final BlockPos dockPos;
+    private final String currentName;
 
-    public ZephyrDockNamingScreen(BlockPos pos) {
+    public ZephyrDockNamingScreen(BlockPos pos, String currentName) {
         super(Component.translatable("gui.zephyr_hauler.dock_naming.title"));
         this.dockPos = pos;
+        this.currentName = currentName;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class ZephyrDockNamingScreen extends Screen {
 
         this.nameField = new EditBox(this.font, x + 28, y + 35, 120, 16, Component.translatable("gui.zephyr_hauler.dock_naming.field_placeholder"));
         this.nameField.setMaxLength(32);
+
         this.nameField.setFocused(true);
         this.nameField.setResponder(text -> {
             if (this.saveButton != null) {
@@ -81,7 +85,13 @@ public class ZephyrDockNamingScreen extends Screen {
 
         com.mojang.blaze3d.systems.RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
-        guiGraphics.drawCenteredString(this.font, this.title, x + (this.imageWidth / 2), y + 10,  0xffffff); // 0x404040 es gris oscuro
+
+        guiGraphics.drawCenteredString(this.font, this.title, x + (this.imageWidth / 2), y + 7,  0xffffff);
+
+        String displayCurrent = this.currentName != null && !this.currentName.isEmpty() ? this.currentName : Component.translatable("gui.zephyr_hauler.dock_naming.unnamed").getString();
+        Component currentText = Component.translatable("gui.zephyr_hauler.dock_naming.current_name").append(Component.literal(displayCurrent).withStyle(ChatFormatting.YELLOW));
+        guiGraphics.drawCenteredString(this.font, currentText, x + (this.imageWidth / 2), y + 20, 0xAAAAAA);
+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 

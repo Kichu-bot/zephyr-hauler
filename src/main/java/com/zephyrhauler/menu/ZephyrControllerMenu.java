@@ -6,6 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,6 +32,19 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
 
         for (int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(playerInv, k, 8 + k * 18, 142));
+        }
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+
+        ItemStack stackInSlot = this.haulerContainer.removeItemNoUpdate(0);
+
+        if (!stackInSlot.isEmpty()) {
+            if (!player.getInventory().add(stackInSlot)) {
+                player.drop(stackInSlot, false);
+            }
         }
     }
 
@@ -66,5 +80,24 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
     public boolean stillValid(Player player) {
         return player.getMainHandItem().getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem ||
                 player.getOffhandItem().getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem;
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < this.slots.size()) {
+            Slot slot = this.slots.get(slotId);
+            if (slot != null && slot.hasItem() && slot.getItem().getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem) {
+                return;
+            }
+        }
+
+        if (clickType == ClickType.SWAP) {
+            ItemStack stackInHotbar = player.getInventory().getItem(button);
+            if (!stackInHotbar.isEmpty() && stackInHotbar.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem) {
+                return;
+            }
+        }
+        
+        super.clicked(slotId, button, clickType, player);
     }
 }

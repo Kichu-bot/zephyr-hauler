@@ -2,10 +2,7 @@ package com.zephyrhauler.registry;
 
 import com.zephyrhauler.block.entity.ZephyrDockBlockEntity;
 import com.zephyrhauler.component.ZephyrDataComponents;
-import com.zephyrhauler.network.ControllerActionPayload;
-import com.zephyrhauler.network.DockStatusRequestPayload;
-import com.zephyrhauler.network.DockStatusResponsePayload;
-import com.zephyrhauler.network.SaveDockNamePayload;
+import com.zephyrhauler.network.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -59,6 +56,12 @@ public class ModNetwork {
                         BlockEntity be = targetLevel.getBlockEntity(payload.dockPos().pos());
 
                         if (be instanceof ZephyrDockBlockEntity dockBE) {
+
+                            if (!dockBE.getDockId().equals(payload.dockId())) {
+                                PacketDistributor.sendToPlayer((ServerPlayer) player, new DockStatusResponsePayload(2, "message.zephyr_hauler.controller.error_dock_replaced"));
+                                return;
+                            }
+
                             ItemStack haulerStack = controllerMenu.haulerContainer.getItem(0);
 
                             if (payload.action() == 0) {
@@ -123,7 +126,7 @@ public class ModNetwork {
                         targetLevel.getChunkSource().addRegionTicket(net.minecraft.server.level.TicketType.POST_TELEPORT, new ChunkPos(payload.pos().pos()), 3, player.getId());
                         BlockEntity be = targetLevel.getBlockEntity(payload.pos().pos());
 
-                        if (be instanceof ZephyrDockBlockEntity dockBE) {
+                        if (be instanceof ZephyrDockBlockEntity dockBE && dockBE.getDockId().equals(payload.dockId())) {
                             int status = (dockBE.getLinkId() != null || dockBE.isOccupied()) ? 1 : 0;
                             PacketDistributor.sendToPlayer((ServerPlayer) player, new DockStatusResponsePayload(status, ""));
                         } else {
@@ -140,6 +143,83 @@ public class ModNetwork {
                     context.enqueueWork(() -> {
                         if (net.minecraft.client.Minecraft.getInstance().screen instanceof com.zephyrhauler.client.gui.screen.ZephyrControllerScreen screen) {
                             screen.receiveStatusUpdate(payload.status(), payload.message());
+                        }
+                    });
+                }
+        );
+
+        registrar.playToServer(
+                RemoveDockPayload.TYPE,
+                RemoveDockPayload.CODEC,
+                (payload, context) -> {
+                    context.enqueueWork(() -> {
+                        Player player = context.player();
+                        if (player == null) return;
+
+                        ItemStack controllerStack = player.getMainHandItem();
+                        if (!(controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem)) {
+                            controllerStack = player.getOffhandItem();
+                        }
+
+                        if (controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem) {
+                            java.util.List<com.zephyrhauler.component.DockEntry> docks = new java.util.ArrayList<>(
+                                    controllerStack.getOrDefault(com.zephyrhauler.component.ZephyrDataComponents.SAVED_DOCKS.get(), java.util.List.of())
+                            );
+
+                            if (payload.index() >= 0 && payload.index() < docks.size()) {
+                                docks.remove(payload.index());
+                                controllerStack.set(com.zephyrhauler.component.ZephyrDataComponents.SAVED_DOCKS.get(), docks);
+                            }
+                        }
+                    });
+                }
+        );
+
+        registrar.playToServer(
+                RefreshDocksPayload.TYPE,
+                RefreshDocksPayload.CODEC,
+                (payload, context) -> {
+                    context.enqueueWork(() -> {
+                        net.minecraft.world.entity.player.Player player = context.player();
+                        if (player == null) return;
+
+                        net.minecraft.world.item.ItemStack controllerStack = player.getMainHandItem();
+                        if (!(controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem)) {
+                            controllerStack = player.getOffhandItem();
+                        }
+
+                        if (controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem) {
+                            java.util.List<com.zephyrhauler.component.DockEntry> docks = new java.util.ArrayList<>(
+                                    controllerStack.getOrDefault(com.zephyrhauler.component.ZephyrDataComponents.SAVED_DOCKS.get(), java.util.List.of())
+                            );
+
+                            boolean updated = false;
+
+                            for (int i = 0; i < docks.size(); i++) {
+                                com.zephyrhauler.component.DockEntry entry = docks.get(i);
+                                net.minecraft.server.level.ServerLevel targetLevel = player.getServer().getLevel(entry.pos().dimension());
+
+                                if (targetLevel != null) {
+                                    net.minecraft.world.level.block.entity.BlockEntity be = targetLevel.getBlockEntity(entry.pos().pos());
+                                    if (be instanceof com.zephyrhauler.block.entity.ZephyrDockBlockEntity dockBE) {
+                                        if (dockBE.getDockId().equals(entry.dockId())) {
+                                            String realName = dockBE.getCustomName().isEmpty() ? net.minecraft.network.chat.Component.translatable("dock.zephyr_hauler.generic_dock").getString() : dockBE.getCustomName();
+
+                                            if (!realName.equals(entry.name())) {
+                                                docks.set(i, new com.zephyrhauler.component.DockEntry(entry.dockId(), realName, entry.pos()));
+                                                updated = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (updated) {
+                                controllerStack.set(com.zephyrhauler.component.ZephyrDataComponents.SAVED_DOCKS.get(), docks);
+                                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer((net.minecraft.server.level.ServerPlayer) player, new DockStatusResponsePayload(-1, "message.zephyr_hauler.controller.success_refresh"));
+                            } else {
+                                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer((net.minecraft.server.level.ServerPlayer) player, new DockStatusResponsePayload(-1, "message.zephyr_hauler.controller.no_changes"));
+                            }
                         }
                     });
                 }

@@ -25,9 +25,12 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
 
     private int selectedIndex = -1;
     private int scrollOffset = 0;
+    private int pendingDeleteIndex = -1;
+    private int deleteConfirmTimer = 0;
 
     private Button btnLink;
     private Button btnReset;
+    private Button btnRefresh;
 
     private int currentDockStatus = -1;
     private String feedbackMessage = "";
@@ -55,7 +58,23 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
         this.btnReset = this.addRenderableWidget(Button.builder(Component.translatable("gui.zephyr_hauler.button.reset"), button -> executeAction(1))
                 .bounds(x - 117, y + 141, 110, 20).build());
 
+        this.btnRefresh = this.addRenderableWidget(Button.builder(Component.literal("⟳"), button -> executeRefresh())
+                .bounds(x - 24, y + 4, 14, 14)
+                .tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("gui.zephyr_hauler.button.refresh")))
+                .build());
+
         updateButtonStates();
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        if (this.deleteConfirmTimer > 0) {
+            this.deleteConfirmTimer--;
+            if (this.deleteConfirmTimer <= 0) {
+                this.pendingDeleteIndex = -1;
+            }
+        }
     }
 
     private void updateButtonStates() {
@@ -88,7 +107,26 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
             List<DockEntry> docks = controllerStack.getOrDefault(ZephyrDataComponents.SAVED_DOCKS.get(), List.of());
             if (this.selectedIndex >= 0 && this.selectedIndex < docks.size()) {
                 DockEntry selectedDock = docks.get(this.selectedIndex);
-                PacketDistributor.sendToServer(new ControllerActionPayload(actionType, selectedDock.pos(), selectedDock.name()));
+                PacketDistributor.sendToServer(new ControllerActionPayload(actionType, selectedDock.dockId(), selectedDock.pos(), selectedDock.name()));
+            }
+        }
+    }
+
+    private void executeRefresh() {
+        net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.zephyrhauler.network.RefreshDocksPayload(true));
+
+        this.currentDockStatus = -1;
+        this.feedbackMessage = Component.translatable("message.zephyr_hauler.controller.refreshing").getString();
+        this.feedbackTimer = 40;
+
+        ItemStack controllerStack = this.minecraft.player.getMainHandItem();
+        if (!(controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem)) controllerStack = this.minecraft.player.getOffhandItem();
+
+        if (controllerStack.getItem() instanceof com.zephyrhauler.item.ZephyrControllerItem) {
+            List<DockEntry> docks = controllerStack.getOrDefault(ZephyrDataComponents.SAVED_DOCKS.get(), List.of());
+            if (this.selectedIndex >= 0 && this.selectedIndex < docks.size()) {
+                DockEntry selectedDock = docks.get(this.selectedIndex);
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.zephyrhauler.network.DockStatusRequestPayload(selectedDock.dockId(), selectedDock.pos()));
             }
         }
     }
@@ -130,13 +168,39 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
                 int actualIndex = i + this.scrollOffset;
                 int itemX = x - 115;
                 int itemY = y + 23 + (i * 14);
+                int deleteX = itemX + 90;
 
-                if (mouseX >= itemX - 2 && mouseX <= itemX + 105 && mouseY >= itemY - 2 && mouseY <= itemY + 12) {
+                if (mouseX >= deleteX && mouseX <= deleteX + 9 && mouseY >= itemY - 1 && mouseY <= itemY + 8) {
+                    if (this.pendingDeleteIndex == actualIndex) {
+                        PacketDistributor.sendToServer(new com.zephyrhauler.network.RemoveDockPayload(actualIndex));
+
+                        if (this.selectedIndex == actualIndex) {
+                            this.selectedIndex = -1;
+                            this.currentDockStatus = -1;
+                            this.feedbackMessage = "";
+                        } else if (this.selectedIndex > actualIndex) {
+                            this.selectedIndex--;
+                        }
+
+                        this.pendingDeleteIndex = -1;
+                        this.updateButtonStates();
+                        this.minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    } else {
+                        this.pendingDeleteIndex = actualIndex;
+                        this.deleteConfirmTimer = 60;
+                        this.minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.2F));
+                    }
+                    return true;
+                }
+
+                if (mouseX >= itemX - 2 && mouseX <= itemX + 85 && mouseY >= itemY - 2 && mouseY <= itemY + 12) {
+                    this.pendingDeleteIndex = -1;
+
                     if (this.selectedIndex != actualIndex) {
                         this.selectedIndex = actualIndex;
                         this.currentDockStatus = -1;
                         this.feedbackMessage = "";
-                        PacketDistributor.sendToServer(new DockStatusRequestPayload(docks.get(actualIndex).pos()));
+                        PacketDistributor.sendToServer(new DockStatusRequestPayload(docks.get(actualIndex).dockId(), docks.get(actualIndex).pos()));
                     }
                     this.updateButtonStates();
                     this.minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -181,13 +245,26 @@ public class ZephyrControllerScreen extends AbstractContainerScreen<ZephyrContro
                 int itemY = y + 23 + (i * 14);
 
                 if (actualIndex == this.selectedIndex) {
-                    graphics.fill(itemX - 2, itemY - 2, itemX + 105, itemY + 11, 0x66AAAAAA);
+                    graphics.fill(itemX - 2, itemY - 2, itemX + 85, itemY + 11, 0x66AAAAAA);
                     graphics.drawString(this.font, Component.literal("> ").withStyle(ChatFormatting.YELLOW).append(Component.literal(docks.get(actualIndex).name()).withStyle(ChatFormatting.WHITE)), itemX, itemY, 0xFFFFFF);
                 } else {
-                    if (mouseX >= itemX - 2 && mouseX <= itemX + 105 && mouseY >= itemY - 2 && mouseY <= itemY + 11) {
-                        graphics.fill(itemX - 2, itemY - 2, itemX + 105, itemY + 11, 0x33FFFFFF);
+                    if (mouseX >= itemX - 2 && mouseX <= itemX + 85 && mouseY >= itemY - 2 && mouseY <= itemY + 11) {
+                        graphics.fill(itemX - 2, itemY - 2, itemX + 85, itemY + 11, 0x33FFFFFF);
                     }
                     graphics.drawString(this.font, Component.literal("- ").withStyle(ChatFormatting.GRAY).append(Component.literal(docks.get(actualIndex).name()).withStyle(ChatFormatting.WHITE)), itemX, itemY, 0xFFFFFF);
+                }
+
+                int deleteX = itemX + 90;
+                boolean hoveringDelete = mouseX >= deleteX && mouseX <= deleteX + 9 && mouseY >= itemY - 1 && mouseY <= itemY + 8;
+
+                if (actualIndex == this.pendingDeleteIndex) {
+                    int confirmColor = (this.deleteConfirmTimer % 20 > 10) ? 0xFFFF3333 : 0xFFCC0000;
+                    graphics.fill(deleteX, itemY - 1, deleteX + 9, itemY + 8, hoveringDelete ? 0xFFFF5555 : confirmColor);
+
+                    graphics.drawString(this.font, "✓", deleteX + 1, itemY - 2, 0xFFFFFF);
+                } else {
+                    graphics.fill(deleteX, itemY - 1, deleteX + 9, itemY + 8, hoveringDelete ? 0xFFFF5555 : 0xAAFF0000);
+                    graphics.drawString(this.font, "X", deleteX + 2, itemY, 0xFFFFFF);
                 }
             }
 
