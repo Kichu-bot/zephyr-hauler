@@ -9,13 +9,14 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import java.util.UUID;
 
-public record DockEntry(UUID dockId, String name, GlobalPos pos) {
+public record DockEntry(UUID dockId, String name, GlobalPos pos, boolean isHub) {
 
     public static final Codec<DockEntry> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     UUIDUtil.CODEC.fieldOf("dockId").forGetter(DockEntry::dockId),
                     Codec.STRING.fieldOf("name").forGetter(DockEntry::name),
-                    GlobalPos.CODEC.fieldOf("pos").forGetter(DockEntry::pos)
+                    GlobalPos.CODEC.fieldOf("pos").forGetter(DockEntry::pos),
+                    Codec.BOOL.fieldOf("isHub").forGetter(DockEntry::isHub)
             ).apply(instance, DockEntry::new)
     );
 
@@ -23,6 +24,7 @@ public record DockEntry(UUID dockId, String name, GlobalPos pos) {
             UUIDUtil.STREAM_CODEC, DockEntry::dockId,
             ByteBufCodecs.STRING_UTF8, DockEntry::name,
             GlobalPos.STREAM_CODEC, DockEntry::pos,
+            ByteBufCodecs.BOOL, DockEntry::isHub,
             DockEntry::new
     );
 }

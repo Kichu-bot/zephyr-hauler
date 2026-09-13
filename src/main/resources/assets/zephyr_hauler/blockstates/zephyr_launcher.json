@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "zephyr_hauler:block/zephyr_launcher"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 {
   "creativetab.zephyr_hauler": "Zephyr Hauler",
+  "entity.zephyr_hauler.zephyr_hauler": "Zephyr Hauler",
 
   "item.zephyr_hauler.zephyr_hauler": "Zephyr Hauler",
   "item.zephyr_hauler.wind_meter": "Wind Vane",
@@ -95,17 +96,28 @@
   "feedback.zephyr_hauler.critical_3": "Massive air leaks. Do not launch without immediate repairs.",
 
   "gui.zephyr_hauler.button.link": "Link Hauler",
+  "gui.zephyr_hauler.button.unlink": "Unlink",
   "gui.zephyr_hauler.button.reset": "Reset Dock",
   "gui.zephyr_hauler.saved_docks": "Saved Docks",
   "gui.zephyr_hauler.status.prefix": "Status:",
   "gui.zephyr_hauler.status.calculating": "⚪ Calculating...",
   "gui.zephyr_hauler.status.free": "🟢 Free",
+  "gui.zephyr_hauler.status.reserved": "🟡 Reserved",
   "gui.zephyr_hauler.status.occupied": "🔴 Occupied",
   "gui.zephyr_hauler.status.inaccessible": "⚪ Inaccessible",
+  "gui.zephyr_hauler.tab.docks": "Docks",
+  "gui.zephyr_hauler.tab.hubs": "Hubs",
 
-  "gui.zephyr_hauler.dock_naming.title": "Name Zephyr Dock",
-  "gui.zephyr_hauler.dock_naming.field_placeholder": "Dock Name",
+  "gui.zephyr_hauler.dock_naming.title": "Name Zephyr Hub",
+  "gui.zephyr_hauler.dock_naming.field_placeholder": "Hub Name",
   "gui.zephyr_hauler.button.save": "Save",
+
+  "block.zephyr_hauler.zephyr_auto_station": "Maintenance Auto-Station",
+  "container.zephyr_hauler.auto_station": "Maintenance Auto-Station",
+
+  "block.zephyr_hauler.zephyr_launcher": "Zephyr Launcher",
+  "block.zephyr_hauler.wind_sensor": "Wind Sensor",
+  "container.zephyr_hauler.launcher": "Zephyr Launcher",
 
   "message.zephyr_hauler.entity.waiting_dock": "Hauler waiting. Use Shift + Right Click (Empty Hand) to unload.",
   "message.zephyr_hauler.entity.need_fuel": "The burner needs fuel. Use coal, blaze, soul items, or wind charges.",
@@ -180,6 +192,22 @@
   "gui.zephyr_hauler.button.refresh": "Refresh Names",
   "message.zephyr_hauler.controller.refreshing": "Syncing docks...",
   "message.zephyr_hauler.controller.success_refresh": "Docks synchronized successfully!",
-  "message.zephyr_hauler.controller.no_changes": "Everything is up to date."
+  "message.zephyr_hauler.controller.no_changes": "Everything is up to date.",
 
+  "message.zephyr_hauler.sensor.linked_item": "Dock coordinates saved to Wind Sensor.",
+  "message.zephyr_hauler.sensor.placed_linked": "Sensor placed. Direction locked to Dock.",
+
+  "gui.zephyr_hauler.sensor.power": "Redstone Power",
+  "message.zephyr_hauler.sensor.locked": "Direction Linked & Locked",
+  "tooltip.zephyr_hauler.sensor.unlinked": "Not linked to any Dock",
+
+  "block.zephyr_hauler.zephyr_cable": "Zephyr Cable",
+  "block.zephyr_hauler.zephyr_hub": "Zephyr Hub",
+  "message.zephyr_hauler.hub.no_space": "Hub is full! No docks available.",
+
+  "gui.zephyr_hauler.hub_monitor.title": "Zephyr Hub Monitor",
+  "gui.zephyr_hauler.hub_monitor.total_docks": "Total Docks: %s",
+  "gui.zephyr_hauler.hub_monitor.no_docks": "No docks in this network.",
+  "gui.zephyr_hauler.hub_monitor.page": "Page %s / %s",
+  "gui.zephyr_hauler.hub_monitor.default_name": "Zephyr Hub"
 }

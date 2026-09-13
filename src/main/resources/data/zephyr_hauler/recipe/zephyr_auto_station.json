@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IKI",
+    "RSR",
+    "ICI"
+  ],
+  "key": {
+    "S": {
+      "item": "zephyr_hauler:zephyr_station"
+    },
+    "K": {
+      "item": "minecraft:crafter"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "zephyr_hauler:zephyr_auto_station",
+    "count": 1
+  }
+}

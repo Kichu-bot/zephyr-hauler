@@ -1,0 +1,42 @@
+{
+  "name": "Hubs & Networks",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:zephyr_hub",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "As your shipping empire grows, linking haulers to individual docks becomes tedious. Welcome to centralized logistics: The $(2)Zephyr Hub$() acts as a master router, managing entire airports dynamically."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_hub",
+      "text": "Crafting the Zephyr Hub. Right-click it with an empty hand to assign a custom network name."
+    },
+    {
+      "title": "Zephyr Cables",
+      "type": "patchouli:text",
+      "text": "A Hub on its own does nothing. You must connect it to your Docks using $(2)Zephyr Cables$(). The Hub will scan up to 256 connected blocks, forming a unified network. Place your Docks around the cables, and the Hub will detect them automatically."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_cable",
+      "text": "Zephyr Cables are cheap to produce and essential for expanding your airport's capacity."
+    },
+    {
+      "title": "Smart Routing",
+      "type": "patchouli:text",
+      "text": "Instead of linking your Hauler to a Dock, link it to the $(2)Hub$(). When the Hauler launches, the Hub will rapidly scan its network and assign it the first $(a)Free$() dock available. The dock will instantly be $(e)Reserved$() to prevent mid-air collisions."
+    },
+    {
+      "title": "Hub Monitor",
+      "type": "patchouli:text",
+      "text": "Need to oversee your airport? Perform a $(2)Shift + Right-Click$() with an empty hand on the Hub to open the $(2)Hub Monitor$(). This interface lets you page through every connected dock, showing real-time coordinates and precise traffic statuses."
+    },
+    {
+      "title": "Memory Link",
+      "type": "patchouli:text",
+      "text": "Haulers are smart. Even though the Hub diverts them to a specific dock, the Hauler retains its $(2)Original Hub Memory$(). When you pick up the landed balloon, it will remember its master Hub, ready to be dispatched again without needing a re-link!"
+    }
+  ]
+}

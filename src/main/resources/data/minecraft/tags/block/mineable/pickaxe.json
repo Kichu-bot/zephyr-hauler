@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "zephyr_hauler:zephyr_dock",
+    "zephyr_hauler:zephyr_station",
+    "zephyr_hauler:zephyr_auto_station",
+    "zephyr_hauler:zephyr_launcher",
+    "zephyr_hauler:wind_sensor",
+    "zephyr_hauler:zephyr_cable",
+    "zephyr_hauler:zephyr_hub"
+  ]
+}

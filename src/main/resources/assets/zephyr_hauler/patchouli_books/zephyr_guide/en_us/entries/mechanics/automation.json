@@ -1,0 +1,40 @@
+{
+  "name": "Factory Automation",
+  "category": "zephyr_hauler:mechanics",
+  "icon": "zephyr_hauler:zephyr_auto_station",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Manual flights and repairs are fine for a beginner, but true magnates automate everything. With the right machinery, your Zephyr fleet can operate entirely on its own."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/automation_example.png"
+      ],
+      "title": "Example",
+      "border": true
+    },
+    {
+      "title": "Zephyr Launcher",
+      "type": "patchouli:text",
+      "text": "Tired of right-clicking to ignite burners? The $(2)Zephyr Launcher$() allows for true redstone integration. Place it below your hauler. When it receives a Redstone pulse, it will automatically fuel and launch the balloon."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_launcher",
+      "text": "Crafting the Launcher. Pair it with hoppers and timers for infinite cargo loops."
+    },
+    {
+      "title": "Auto-Station",
+      "type": "patchouli:text",
+      "text": "The $(2)Maintenance Auto-Station$() eliminates the manual labor of repairs. Supply its internal inventory with materials like wool, iron, and string. When a damaged hauler lands on it, the station will autonomously patch it up."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:zephyr_auto_station",
+      "text": "Crafting the Auto-Station. It features an interface to toggle the auto-repair function on or off."
+    }
+  ]
+}

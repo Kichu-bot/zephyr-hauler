@@ -1,6 +1,7 @@
 package com.zephyrhauler.entity;
 
 import com.zephyrhauler.block.entity.ZephyrDockBlockEntity;
+import com.zephyrhauler.block.entity.ZephyrHubBlockEntity;
 import com.zephyrhauler.component.ZephyrDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -67,6 +68,39 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         this.noPhysics = false;
     }
 
+    private void restoreHubLinkIfNecessary() {
+        if (this.haulerItem.has(DataComponents.CUSTOM_DATA)) {
+            CustomData customData = this.haulerItem.get(DataComponents.CUSTOM_DATA);
+            CompoundTag tag = customData.copyTag();
+            if (tag.contains("OriginalHubPos")) {
+                BlockPos hubPos = BlockPos.of(tag.getLong("OriginalHubPos"));
+                net.minecraft.resources.ResourceKey<Level> dim = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, net.minecraft.resources.ResourceLocation.parse(tag.getString("OriginalHubDim")));
+
+                this.haulerItem.set(ZephyrDataComponents.TARGET_POS.get(), GlobalPos.of(dim, hubPos));
+
+                tag.remove("OriginalHubPos");
+                tag.remove("OriginalHubDim");
+                if (tag.isEmpty()) this.haulerItem.remove(DataComponents.CUSTOM_DATA);
+                else this.haulerItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+            }
+        }
+    }
+
+    public static boolean isAirspaceObstructed(Level level, BlockPos basePos) {
+        if (!level.isLoaded(basePos)) return true;
+        for (int y = 1; y <= 60; y++) {
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    BlockPos scanPos = basePos.offset(x, y, z);
+                    if (!level.getBlockState(scanPos).getCollisionShape(level, scanPos).isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private long countItemsRecursively(CompoundTag tag) {
         long total = 0;
         String[] possibleListNames = {"Items", "Inventory", "inventory", "items"};
@@ -75,15 +109,11 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 ListTag list = tag.getList(listName, 10);
                 for (int i = 0; i < list.size(); i++) {
                     CompoundTag itemTag = list.getCompound(i);
-                    if (itemTag.contains("count")) {
-                        total += itemTag.getInt("count");
-                    } else if (itemTag.contains("Count")) {
-                        total += itemTag.getInt("Count");
-                    }
+                    if (itemTag.contains("count")) total += itemTag.getInt("count");
+                    else if (itemTag.contains("Count")) total += itemTag.getInt("Count");
                 }
             }
         }
-
         for (String key : tag.getAllKeys()) {
             net.minecraft.nbt.Tag child = tag.get(key);
             if (child instanceof CompoundTag childCompound) {
@@ -99,9 +129,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         this.haulerItem = haulerItem;
         this.originY = this.getY();
 
-        String color = haulerItem.getOrDefault(ZephyrDataComponents.HAULER_COLOR.get(), "white");
-        this.setColor(color);
-
+        this.setColor(haulerItem.getOrDefault(ZephyrDataComponents.HAULER_COLOR.get(), "white"));
         long totalItemCount = countItemsRecursively(blockEntityData);
 
         int calculatedWeight = 0;
@@ -111,16 +139,10 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         else if (totalItemCount > 320) calculatedWeight = 1;
 
         java.util.List<String> upgrades = haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), new java.util.ArrayList<>());
-        if (upgrades.contains("shulker_buoyancy")) {
-            calculatedWeight = Math.max(0, calculatedWeight - 1);
-        }
-
+        if (upgrades.contains("shulker_buoyancy")) calculatedWeight = Math.max(0, calculatedWeight - 1);
         this.entityData.set(WEIGHT_TIER, calculatedWeight);
 
-        int maxDurability = 8;
-        if (upgrades.contains("netherite_plating")) maxDurability = 32;
-        else if (upgrades.contains("reinforced")) maxDurability = 12;
-
+        int maxDurability = upgrades.contains("netherite_plating") ? 32 : (upgrades.contains("reinforced") ? 12 : 8);
         this.entityData.set(SYNCED_DURABILITY, haulerItem.getOrDefault(ZephyrDataComponents.HAULER_DURABILITY.get(), maxDurability));
     }
 
@@ -155,9 +177,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 if (!this.level().isClientSide()) {
                     if (player.isShiftKeyDown() && heldItem.isEmpty()) {
                         GlobalPos targetPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
-                        if (targetPos != null) {
-                            attemptLanding(targetPos.pos(), player);
-                        }
+                        if (targetPos != null) attemptLanding(targetPos.pos(), player);
                     } else {
                         player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.waiting_dock").withStyle(ChatFormatting.YELLOW), true);
                     }
@@ -167,28 +187,18 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
             if (this.entityData.get(WAITING_FOR_LAUNCH)) {
                 if (player.isShiftKeyDown() && heldItem.isEmpty()) {
-                    if (!this.level().isClientSide()) {
-                        abortLaunch(player);
-                    }
+                    if (!this.level().isClientSide()) abortLaunch(player);
                     return InteractionResult.sidedSuccess(this.level().isClientSide());
                 }
                 else if (!player.isShiftKeyDown()) {
                     if (!this.level().isClientSide()) {
-                        float speedMult = 0.5f;
-                        int fuelTier = 0;
-                        boolean isFuel = false;
+                        float speedMult = 0.5f; int fuelTier = 0; boolean isFuel = false;
 
-                        if (heldItem.isEmpty()) {
-                            isFuel = true;
-                        } else if (heldItem.is(Items.COAL) || heldItem.is(Items.CHARCOAL) || heldItem.is(Items.DRIED_KELP_BLOCK)) {
-                            speedMult = 1.0f; fuelTier = 1; isFuel = true;
-                        } else if (heldItem.is(Items.BLAZE_POWDER) || heldItem.is(Items.MAGMA_CREAM) || heldItem.is(Items.COAL_BLOCK)) {
-                            speedMult = 1.5f; fuelTier = 2; isFuel = true;
-                        } else if (heldItem.is(Items.SOUL_SAND) || heldItem.is(Items.SOUL_SOIL) || heldItem.is(Items.SOUL_CAMPFIRE)) {
-                            speedMult = 2.0f; fuelTier = 3; isFuel = true;
-                        } else if (heldItem.is(Items.WIND_CHARGE) || heldItem.is(Items.GUNPOWDER)) {
-                            speedMult = 3.0f; fuelTier = 4; isFuel = true;
-                        }
+                        if (heldItem.isEmpty()) isFuel = true;
+                        else if (heldItem.is(Items.COAL) || heldItem.is(Items.CHARCOAL) || heldItem.is(Items.DRIED_KELP_BLOCK)) { speedMult = 1.0f; fuelTier = 1; isFuel = true; }
+                        else if (heldItem.is(Items.BLAZE_POWDER) || heldItem.is(Items.MAGMA_CREAM) || heldItem.is(Items.COAL_BLOCK)) { speedMult = 1.5f; fuelTier = 2; isFuel = true; }
+                        else if (heldItem.is(Items.SOUL_SAND) || heldItem.is(Items.SOUL_SOIL) || heldItem.is(Items.SOUL_CAMPFIRE)) { speedMult = 2.0f; fuelTier = 3; isFuel = true; }
+                        else if (heldItem.is(Items.WIND_CHARGE) || heldItem.is(Items.GUNPOWDER)) { speedMult = 3.0f; fuelTier = 4; isFuel = true; }
 
                         if (!isFuel) {
                             player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.need_fuel").withStyle(ChatFormatting.RED), true);
@@ -203,147 +213,119 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                             else if (fuelTier == 3) { fuelTier = 4; speedMult = 3.0f; }
                             else if (fuelTier == 4) { fuelTier = 5; speedMult = 5.0f; }
                         }
+                        if (!player.isCreative() && fuelTier > 0) heldItem.shrink(1);
 
-                        if (!player.isCreative() && fuelTier > 0) {
-                            heldItem.shrink(1);
-                        }
+                        GlobalPos targetGlobalPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
 
-                        if (this.haulerItem.has(ZephyrDataComponents.TARGET_POS.get()) && this.haulerItem.has(ZephyrDataComponents.LINK_ID.get())) {
-                            GlobalPos targetPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+                        if (targetGlobalPos != null && this.haulerItem.has(ZephyrDataComponents.LINK_ID.get())) {
                             java.util.UUID entityLinkId = this.haulerItem.get(ZephyrDataComponents.LINK_ID.get());
+                            ServerLevel targetLevel = this.getServer().getLevel(targetGlobalPos.dimension());
 
-                            ServerLevel targetLevel = this.getServer().getLevel(targetPos.dimension());
                             if (targetLevel != null) {
-                                BlockEntity be = targetLevel.getBlockEntity(targetPos.pos());
-                                if (be instanceof ZephyrDockBlockEntity dockBE) {
-                                    java.util.UUID dockLinkId = dockBE.getLinkId();
+                                targetLevel.getChunkSource().addRegionTicket(net.minecraft.server.level.TicketType.POST_TELEPORT, new ChunkPos(targetGlobalPos.pos()), 3, this.getId());
+                                BlockEntity be = targetLevel.getBlockEntity(targetGlobalPos.pos());
 
-                                    if (dockLinkId == null || !dockLinkId.equals(entityLinkId)) {
+                                if (be instanceof ZephyrHubBlockEntity hubBE) {
+                                    if (hubBE.getHubId() == null || !hubBE.getHubId().equals(entityLinkId)) {
+                                        this.triggerAnim("controller", "deny_action");
+                                        player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.link_broken").withStyle(ChatFormatting.RED), true);
+                                        return InteractionResult.sidedSuccess(this.level().isClientSide());
+                                    }
+                                    BlockPos assignedDock = hubBE.requestAvailableDock();
+                                    if (assignedDock != null) {
+                                        CustomData customData = this.haulerItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                                        CompoundTag tag = customData.copyTag();
+                                        tag.putLong("OriginalHubPos", targetGlobalPos.pos().asLong());
+                                        tag.putString("OriginalHubDim", targetGlobalPos.dimension().location().toString());
+                                        this.haulerItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+                                        this.haulerItem.set(ZephyrDataComponents.TARGET_POS.get(), GlobalPos.of(targetGlobalPos.dimension(), assignedDock));
+                                        targetGlobalPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+
+                                        BlockEntity assignedBE = targetLevel.getBlockEntity(assignedDock);
+                                        if (assignedBE instanceof ZephyrDockBlockEntity newDockBE) newDockBE.setLinkId(entityLinkId);
+                                    } else {
+                                        this.triggerAnim("controller", "deny_action");
+                                        player.displayClientMessage(Component.translatable("message.zephyr_hauler.hub.no_space").withStyle(ChatFormatting.RED), true);
+                                        this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                                        return InteractionResult.sidedSuccess(this.level().isClientSide());
+                                    }
+                                }
+                                else if (be instanceof ZephyrDockBlockEntity dockBE) {
+                                    BlockState dState = targetLevel.getBlockState(targetGlobalPos.pos());
+                                    boolean isReserved = dState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED) && dState.getValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED);
+
+                                    if (dockBE.getLinkId() == null || !dockBE.getLinkId().equals(entityLinkId)) {
                                         this.triggerAnim("controller", "deny_action");
                                         player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.link_broken").withStyle(ChatFormatting.RED), true);
                                         this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
                                         return InteractionResult.sidedSuccess(this.level().isClientSide());
                                     }
-                                    if (dockBE.isOccupied()) {
+
+                                    if (dockBE.isOccupied() || isReserved) {
                                         this.triggerAnim("controller", "deny_action");
                                         player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.dock_occupied").withStyle(ChatFormatting.RED), true);
                                         this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
                                         return InteractionResult.sidedSuccess(this.level().isClientSide());
                                     }
-                                    dockBE.setOccupied(true);
-                                } else {
-                                    this.triggerAnim("controller", "deny_action");
-                                    player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.dock_missing").withStyle(ChatFormatting.RED), true);
-                                    this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                                    return InteractionResult.sidedSuccess(this.level().isClientSide());
-                                }
-                            }
-                        } else {
-                            this.triggerAnim("controller", "deny_action");
-                            player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.corrupt_data").withStyle(ChatFormatting.RED), true);
-                            this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                            return InteractionResult.sidedSuccess(this.level().isClientSide());
-                        }
 
-                        boolean escapeBlocked = false;
-                        BlockPos originCenter = this.blockPosition();
-
-                        scanEscapeLoop:
-                        for (int y = 1; y <= 60; y++) {
-                            for (int x = -1; x <= 1; x++) {
-                                for (int z = -1; z <= 1; z++) {
-                                    BlockPos scanPos = originCenter.offset(x, y, z);
-                                    if (!this.level().getBlockState(scanPos).getCollisionShape(this.level(), scanPos).isEmpty()) {
-                                        escapeBlocked = true;
-                                        break scanEscapeLoop;
+                                    if (dState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                                        targetLevel.setBlock(targetGlobalPos.pos(), dState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, true), 3);
                                     }
                                 }
                             }
                         }
 
+                        boolean escapeBlocked = isAirspaceObstructed(this.level(), this.blockPosition());
                         boolean landingBlocked = false;
-                        GlobalPos targetGlobalPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+
                         if (targetGlobalPos != null && !escapeBlocked) {
                             ServerLevel targetLvl = this.getServer().getLevel(targetGlobalPos.dimension());
-                            if (targetLvl != null) {
-                                BlockPos destCenter = targetGlobalPos.pos();
-                                scanLandingLoop:
-                                for (int y = 1; y <= 60; y++) {
-                                    for (int x = -1; x <= 1; x++) {
-                                        for (int z = -1; z <= 1; z++) {
-                                            BlockPos scanPos = destCenter.offset(x, y, z);
-                                            if (!targetLvl.getBlockState(scanPos).getCollisionShape(targetLvl, scanPos).isEmpty()) {
-                                                landingBlocked = true;
-                                                break scanLandingLoop;
-                                            }
+                            if (targetLvl != null) landingBlocked = isAirspaceObstructed(targetLvl, targetGlobalPos.pos());
+                        }
+
+                        if (escapeBlocked || landingBlocked) {
+                            if (targetGlobalPos != null) {
+                                ServerLevel targetLvl = this.getServer().getLevel(targetGlobalPos.dimension());
+                                if (targetLvl != null) {
+                                    BlockEntity be = targetLvl.getBlockEntity(targetGlobalPos.pos());
+                                    if (be instanceof ZephyrDockBlockEntity dockBE) {
+                                        dockBE.setOccupied(false);
+                                        BlockState targetState = targetLvl.getBlockState(targetGlobalPos.pos());
+                                        if (targetState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                                            targetLvl.setBlock(targetGlobalPos.pos(), targetState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
                                         }
                                     }
                                 }
                             }
-                        }
-
-                        if (escapeBlocked || landingBlocked) {
-                            ServerLevel targetLvl = this.getServer().getLevel(targetGlobalPos.dimension());
-                            if (targetLvl != null) {
-                                BlockEntity be = targetLvl.getBlockEntity(targetGlobalPos.pos());
-                                if (be instanceof ZephyrDockBlockEntity dockBE) {
-                                    dockBE.setOccupied(false);
-                                }
-                            }
-
                             this.entityData.set(PATH_BLOCKED, true);
                             this.triggerAnim("controller", "deny_action");
-
-                            if (escapeBlocked) {
-                                player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.path_blocked").withStyle(ChatFormatting.RED), true);
-                            } else {
-                                player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.landing_blocked").withStyle(ChatFormatting.RED), true);
-                            }
-
+                            player.displayClientMessage(Component.translatable(escapeBlocked ? "message.zephyr_hauler.entity.path_blocked" : "message.zephyr_hauler.entity.landing_blocked").withStyle(ChatFormatting.RED), true);
                             this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
                         } else {
-                            if (upgrades.contains("aerodynamic")) {
-                                speedMult *= 1.25f;
-                            }
-
+                            if (upgrades.contains("aerodynamic")) speedMult *= 1.25f;
                             int wTier = this.entityData.get(WEIGHT_TIER);
 
                             if (targetGlobalPos != null) {
-                                BlockPos targetPos = targetGlobalPos.pos();
                                 BlockPos originPos = this.blockPosition();
-
-                                double dx = targetPos.getX() - originPos.getX();
-                                double dz = targetPos.getZ() - originPos.getZ();
+                                double dx = targetGlobalPos.pos().getX() - originPos.getX();
+                                double dz = targetGlobalPos.pos().getZ() - originPos.getZ();
 
                                 if (dx != 0 || dz != 0) {
                                     com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level());
-
                                     double travelLength = Math.sqrt(dx * dx + dz * dz);
                                     double dirX = dx / travelLength;
                                     double dirZ = dz / travelLength;
-
-                                    double windX = wind.direction().x;
-                                    double windZ = wind.direction().z;
-                                    double windLength = Math.sqrt(windX * windX + windZ * windZ);
+                                    double windLength = Math.sqrt(wind.direction().x * wind.direction().x + wind.direction().z * wind.direction().z);
 
                                     if (windLength > 0) {
-                                        double nWindX = windX / windLength;
-                                        double nWindZ = windZ / windLength;
-
-                                        double dotProduct = (dirX * nWindX) + (dirZ * nWindZ);
-
-                                        float altitudeMultiplier = 1.0f;
-                                        if (this.getY() > 128) altitudeMultiplier = 1.5f;
-                                        else if (this.getY() < 60) altitudeMultiplier = 0.5f;
-
+                                        double dotProduct = (dirX * (wind.direction().x / windLength)) + (dirZ * (wind.direction().z / windLength));
+                                        float altitudeMultiplier = this.getY() > 128 ? 1.5f : (this.getY() < 60 ? 0.5f : 1.0f);
                                         float windInertiaNerf = 1.0f - (wTier * 0.15f);
-                                        float windModifier = 1.0f + (float)(dotProduct * wind.speedBonus() * altitudeMultiplier * Math.max(0.2f, windInertiaNerf));
-
-                                        speedMult *= Math.max(0.2f, windModifier);
+                                        speedMult *= Math.max(0.2f, 1.0f + (float)(dotProduct * wind.speedBonus() * altitudeMultiplier * Math.max(0.2f, windInertiaNerf)));
                                     }
                                 }
                             }
-
                             this.entityData.set(SPEED_MULTIPLIER, speedMult);
                             this.entityData.set(FUEL_TIER, fuelTier);
                             this.setWaitingForLaunch(false);
@@ -353,9 +335,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                             else if (fuelTier == 2) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_WARN, SoundSource.NEUTRAL, 0.5F, 1.0F);
                             else if (fuelTier == 3) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.5F, 1.5F);
                             else if (fuelTier == 4) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.NEUTRAL, 0.5F, 2.0F);
-                            else if (fuelTier == 5) {
-                                this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.NEUTRAL, 1.0F, 1.5F);
-                            }
+                            else if (fuelTier == 5) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.NEUTRAL, 1.0F, 1.5F);
 
                             player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.launch_info", wTier, fuelTier).withStyle(ChatFormatting.AQUA), true);
                         }
@@ -365,6 +345,135 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
             }
         }
         return super.interact(player, hand);
+    }
+
+    public boolean triggerRedstoneLaunch(int fuelTier, float speedMult) {
+        if (!this.level().isClientSide() && this.entityData.get(WAITING_FOR_LAUNCH)) {
+            GlobalPos targetGlobalPos = null;
+
+            if (this.haulerItem.has(ZephyrDataComponents.TARGET_POS.get()) && this.haulerItem.has(ZephyrDataComponents.LINK_ID.get())) {
+                targetGlobalPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+                java.util.UUID entityLinkId = this.haulerItem.get(ZephyrDataComponents.LINK_ID.get());
+                ServerLevel targetLevel = this.getServer().getLevel(targetGlobalPos.dimension());
+
+                if (targetLevel != null) {
+                    targetLevel.getChunkSource().addRegionTicket(net.minecraft.server.level.TicketType.POST_TELEPORT, new ChunkPos(targetGlobalPos.pos()), 3, this.getId());
+                    BlockEntity be = targetLevel.getBlockEntity(targetGlobalPos.pos());
+
+                    if (be instanceof ZephyrHubBlockEntity hubBE) {
+                        if (hubBE.getHubId() == null || !hubBE.getHubId().equals(entityLinkId)) {
+                            this.triggerAnim("controller", "deny_action");
+                            this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                            return false;
+                        }
+                        BlockPos assignedDock = hubBE.requestAvailableDock();
+                        if (assignedDock != null) {
+                            CustomData customData = this.haulerItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                            CompoundTag tag = customData.copyTag();
+                            tag.putLong("OriginalHubPos", targetGlobalPos.pos().asLong());
+                            tag.putString("OriginalHubDim", targetGlobalPos.dimension().location().toString());
+                            this.haulerItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+                            this.haulerItem.set(ZephyrDataComponents.TARGET_POS.get(), GlobalPos.of(targetGlobalPos.dimension(), assignedDock));
+                            targetGlobalPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+
+                            BlockEntity assignedBE = targetLevel.getBlockEntity(assignedDock);
+                            if (assignedBE instanceof ZephyrDockBlockEntity newDockBE) newDockBE.setLinkId(entityLinkId);
+                        } else {
+                            this.triggerAnim("controller", "deny_action");
+                            this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                            return false;
+                        }
+                    }
+                    else if (be instanceof ZephyrDockBlockEntity dockBE) {
+                        BlockState dState = targetLevel.getBlockState(targetGlobalPos.pos());
+                        boolean isReserved = dState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED) && dState.getValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED);
+
+                        if (dockBE.getLinkId() == null || !dockBE.getLinkId().equals(entityLinkId) || dockBE.isOccupied() || isReserved) {
+                            this.triggerAnim("controller", "deny_action");
+                            this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                            return false;
+                        }
+
+                        if (dState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                            targetLevel.setBlock(targetGlobalPos.pos(), dState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, true), 3);
+                        }
+                    } else return false;
+                }
+            } else return false;
+
+            boolean escapeBlocked = isAirspaceObstructed(this.level(), this.blockPosition());
+            boolean landingBlocked = false;
+
+            if (targetGlobalPos != null && !escapeBlocked) {
+                ServerLevel targetLvl = this.getServer().getLevel(targetGlobalPos.dimension());
+                if (targetLvl != null) landingBlocked = isAirspaceObstructed(targetLvl, targetGlobalPos.pos());
+            }
+
+            if (escapeBlocked || landingBlocked) {
+                if (targetGlobalPos != null) {
+                    ServerLevel targetLvl = this.getServer().getLevel(targetGlobalPos.dimension());
+                    if (targetLvl != null) {
+                        BlockEntity be = targetLvl.getBlockEntity(targetGlobalPos.pos());
+                        if (be instanceof ZephyrDockBlockEntity dockBE) {
+                            dockBE.setOccupied(false);
+                            BlockState targetState = targetLvl.getBlockState(targetGlobalPos.pos());
+                            if (targetState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                                targetLvl.setBlock(targetGlobalPos.pos(), targetState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
+                            }
+                        }
+                    }
+                }
+                this.entityData.set(PATH_BLOCKED, true);
+                this.triggerAnim("controller", "deny_action");
+                this.level().playSound(null, this.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                return false;
+            }
+
+            java.util.List<String> upgrades = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), new java.util.ArrayList<>());
+            if (upgrades.contains("supercharged_burner") && fuelTier > 0) {
+                if (fuelTier == 1) { fuelTier = 2; speedMult = 1.5f; }
+                else if (fuelTier == 2) { fuelTier = 3; speedMult = 2.0f; }
+                else if (fuelTier == 3) { fuelTier = 4; speedMult = 3.0f; }
+                else if (fuelTier == 4) { fuelTier = 5; speedMult = 5.0f; }
+            }
+            if (upgrades.contains("aerodynamic")) speedMult *= 1.25f;
+
+            int wTier = this.entityData.get(WEIGHT_TIER);
+            if (targetGlobalPos != null) {
+                BlockPos originPos = this.blockPosition();
+                double dx = targetGlobalPos.pos().getX() - originPos.getX();
+                double dz = targetGlobalPos.pos().getZ() - originPos.getZ();
+
+                if (dx != 0 || dz != 0) {
+                    com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level());
+                    double travelLength = Math.sqrt(dx * dx + dz * dz);
+                    double dirX = dx / travelLength;
+                    double dirZ = dz / travelLength;
+                    double windLength = Math.sqrt(wind.direction().x * wind.direction().x + wind.direction().z * wind.direction().z);
+
+                    if (windLength > 0) {
+                        double dotProduct = (dirX * (wind.direction().x / windLength)) + (dirZ * (wind.direction().z / windLength));
+                        float altitudeMultiplier = this.getY() > 128 ? 1.5f : (this.getY() < 60 ? 0.5f : 1.0f);
+                        float windInertiaNerf = 1.0f - (wTier * 0.15f);
+                        speedMult *= Math.max(0.2f, 1.0f + (float)(dotProduct * wind.speedBonus() * altitudeMultiplier * Math.max(0.2f, windInertiaNerf)));
+                    }
+                }
+            }
+
+            this.entityData.set(SPEED_MULTIPLIER, speedMult);
+            this.entityData.set(FUEL_TIER, fuelTier);
+            this.setWaitingForLaunch(false);
+            this.entityData.set(PATH_BLOCKED, false);
+
+            if (fuelTier == 1) this.level().playSound(null, this.blockPosition(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL, 1.0F, 1.0F);
+            else if (fuelTier == 2) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_WARN, SoundSource.NEUTRAL, 0.5F, 1.0F);
+            else if (fuelTier == 3) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.5F, 1.5F);
+            else if (fuelTier >= 4) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.NEUTRAL, 0.5F, 2.0F);
+
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -384,7 +493,6 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 else if (wTier == 2) baseSpeed = -0.22;
                 else if (wTier == 3) baseSpeed = -0.32;
                 else if (wTier == 4) baseSpeed = -0.45;
-
                 if (this.entityData.get(SYNCED_DURABILITY) <= 0) baseSpeed = -0.65;
             } else {
                 if (wTier == 0) baseSpeed = 0.12;
@@ -419,9 +527,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
                 if (this.entityData.get(SYNCED_DURABILITY) <= 2) {
                     this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, px, py + 1.0, pz, 0, 0.05, 0);
-                    if (this.random.nextInt(20) == 0) {
-                        this.level().playLocalSound(px, py, pz, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 0.2f, 1.5f, false);
-                    }
+                    if (this.random.nextInt(20) == 0) this.level().playLocalSound(px, py, pz, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 0.2f, 1.5f, false);
                 }
             }
         }
@@ -431,34 +537,35 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         if (!this.level().isClientSide()) {
             if (!this.entityData.get(WAITING_FOR_LAUNCH) && !this.entityData.get(WAITING_AT_DOCK) && !this.entityData.get(PATH_BLOCKED)) {
                 if (!this.entityData.get(IS_DESCENDING)) {
-                    if (this.getY() >= this.originY + 60) {
-                        transferDataToDockAndDiscard();
-                    }
+                    if (this.getY() >= this.originY + 60) transferDataToDockAndDiscard();
                 } else {
-                    if (this.haulerItem.has(ZephyrDataComponents.TARGET_POS.get())) {
-                        GlobalPos targetPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
-                        if (targetPos != null) {
-                            BlockPos dockPos = targetPos.pos();
+                    GlobalPos targetGlobal = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
 
-                            if (this.getY() <= dockPos.getY() + 2.0) {
-                                this.setPos(this.getX(), dockPos.getY() + 1.1, this.getZ());
-                                this.setDeltaMovement(0, 0, 0);
-                                this.setWaitingAtDock(true);
+                    if (targetGlobal != null && this.getY() <= targetGlobal.pos().getY() + 2.0) {
+                        this.setPos(this.getX(), targetGlobal.pos().getY() + 1.1, this.getZ());
+                        this.setDeltaMovement(0, 0, 0);
+                        this.setWaitingAtDock(true);
 
-                                java.util.List<String> upgrades = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), new java.util.ArrayList<>());
-                                int wTier = this.entityData.get(WEIGHT_TIER);
-
-                                if (this.entityData.get(SYNCED_DURABILITY) <= 0) {
-                                    this.level().playSound(null, this.blockPosition(), SoundEvents.ANVIL_HIT, SoundSource.NEUTRAL, 1.0f, 0.5f);
-                                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 3, 0.5, 0.5, 0.5, 0.1);
-                                }
-                                else if (upgrades.contains("shock_absorbers") && wTier >= 2) {
-                                    this.level().playSound(null, this.blockPosition(), SoundEvents.SLIME_BLOCK_FALL, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                                } else {
-                                    this.level().playSound(null, this.blockPosition(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.NEUTRAL, 0.5F, 1.0F);
-                                }
+                        ServerLevel targetLvl = this.getServer().getLevel(targetGlobal.dimension());
+                        if (targetLvl != null) {
+                            BlockEntity targetBE = targetLvl.getBlockEntity(targetGlobal.pos());
+                            if (targetBE instanceof ZephyrDockBlockEntity dockBE) {
+                                dockBE.setOccupied(true);
+                                dockBE.setChanged();
+                            }
+                            BlockState dState = targetLvl.getBlockState(targetGlobal.pos());
+                            if (dState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                                targetLvl.setBlock(targetGlobal.pos(), dState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
                             }
                         }
+
+                        java.util.List<String> upgrades = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), new java.util.ArrayList<>());
+                        if (this.entityData.get(SYNCED_DURABILITY) <= 0) {
+                            this.level().playSound(null, this.blockPosition(), SoundEvents.ANVIL_HIT, SoundSource.NEUTRAL, 1.0f, 0.5f);
+                            ((ServerLevel) this.level()).sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 3, 0.5, 0.5, 0.5, 0.1);
+                        }
+                        else if (upgrades.contains("shock_absorbers") && this.entityData.get(WEIGHT_TIER) >= 2) this.level().playSound(null, this.blockPosition(), SoundEvents.SLIME_BLOCK_FALL, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                        else this.level().playSound(null, this.blockPosition(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.NEUTRAL, 0.5F, 1.0F);
                     }
                 }
             }
@@ -475,13 +582,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
         if (targetLevel != null) {
             java.util.List<String> upgrades = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), new java.util.ArrayList<>());
-
-            int maxDurability = 8;
-            if (upgrades.contains("netherite_plating")) maxDurability = 32;
-            else if (upgrades.contains("reinforced")) maxDurability = 12;
-
-            int currentDurability = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_DURABILITY.get(), maxDurability);
-
+            int currentDurability = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_DURABILITY.get(), upgrades.contains("netherite_plating") ? 32 : (upgrades.contains("reinforced") ? 12 : 8));
             int damage = 1;
             int wTier = this.entityData.get(WEIGHT_TIER);
 
@@ -489,11 +590,8 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
             else if (targetLevel.isRaining() && !upgrades.contains("waxed")) damage = 2;
 
             if (!upgrades.contains("shock_absorbers")) {
-                if (wTier == 4 && !upgrades.contains("reinforced") && !upgrades.contains("netherite_plating")) {
-                    damage += 2;
-                } else if (wTier >= 2 && !upgrades.contains("reinforced") && !upgrades.contains("netherite_plating") && this.random.nextFloat() < 0.3f) {
-                    damage += 1;
-                }
+                if (wTier == 4 && !upgrades.contains("reinforced") && !upgrades.contains("netherite_plating")) damage += 2;
+                else if (wTier >= 2 && !upgrades.contains("reinforced") && !upgrades.contains("netherite_plating") && this.random.nextFloat() < 0.3f) damage += 1;
             }
 
             int unbreakingLevel = 0;
@@ -508,28 +606,17 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
             }
 
             int finalDamage = 0;
-            for (int d = 0; d < damage; d++) {
-                if (this.random.nextInt(unbreakingLevel + 1) == 0) {
-                    finalDamage++;
-                }
-            }
+            for (int d = 0; d < damage; d++) if (this.random.nextInt(unbreakingLevel + 1) == 0) finalDamage++;
 
             int newDurability = Math.max(0, currentDurability - finalDamage);
             this.haulerItem.set(ZephyrDataComponents.HAULER_DURABILITY.get(), newDurability);
 
             if (newDurability <= 0 && currentDurability > 0) {
                 String[] damagePool = {"torn_fabric", "frayed_seams", "air_leak", "clogged_burner", "stuck_valve", "broken_straps", "soot_buildup", "deformed_ring"};
-                String randomDamage = damagePool[this.random.nextInt(damagePool.length)];
-
-                if (wTier >= 3 && this.random.nextBoolean()) {
-                    randomDamage = "broken_straps";
-                }
-                this.haulerItem.set(ZephyrDataComponents.HAULER_DAMAGE.get(), randomDamage);
+                this.haulerItem.set(ZephyrDataComponents.HAULER_DAMAGE.get(), (wTier >= 3 && this.random.nextBoolean()) ? "broken_straps" : damagePool[this.random.nextInt(damagePool.length)]);
             }
 
-            ChunkPos chunkPos = new ChunkPos(targetPos.pos());
-            targetLevel.getChunkSource().addRegionTicket(net.minecraft.server.level.TicketType.POST_TELEPORT, chunkPos, 3, this.getId());
-
+            targetLevel.getChunkSource().addRegionTicket(net.minecraft.server.level.TicketType.POST_TELEPORT, new ChunkPos(targetPos.pos()), 3, this.getId());
             BlockEntity be = targetLevel.getBlockEntity(targetPos.pos());
             if (be instanceof ZephyrDockBlockEntity dockBE) {
                 CompoundTag payload = new CompoundTag();
@@ -547,72 +634,73 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         if (this.level().getBlockState(placePos).canBeReplaced()) {
             this.level().setBlock(placePos, this.entityData.get(CAPTURED_BLOCK), 3);
             BlockEntity be = this.level().getBlockEntity(placePos);
-            if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
-            }
+            if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
+
             BlockEntity dockBe = this.level().getBlockEntity(dockPos);
             if (dockBe instanceof ZephyrDockBlockEntity dockBE) {
                 dockBE.setOccupied(false);
+                dockBE.setChanged();
+            }
+            BlockState dockState = this.level().getBlockState(dockPos);
+            if (dockState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                this.level().setBlock(dockPos, dockState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
             }
 
-            if (!player.getInventory().add(this.haulerItem.copy())) {
-                this.spawnAtLocation(this.haulerItem);
-            } else {
-                this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
-            }
+            restoreHubLinkIfNecessary();
+            if (!player.getInventory().add(this.haulerItem.copy())) this.spawnAtLocation(this.haulerItem);
+            else this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
 
             this.discard();
-        } else {
-            this.entityData.set(WAITING_AT_DOCK, true);
-        }
+        } else this.entityData.set(WAITING_AT_DOCK, true);
     }
 
     private void abortLaunch(Player player) {
-        if (!player.getInventory().add(this.haulerItem.copy())) {
-            this.spawnAtLocation(this.haulerItem);
-        } else {
-            this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
-        }
+        GlobalPos currentTarget = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+
+        restoreHubLinkIfNecessary();
+
+        if (!player.getInventory().add(this.haulerItem.copy())) this.spawnAtLocation(this.haulerItem);
+        else this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
 
         BlockState capturedState = this.entityData.get(CAPTURED_BLOCK);
-        Block capturedBlock = capturedState.getBlock();
         BlockPos basePos = this.blockPosition();
 
-        if (capturedBlock != Blocks.AIR) {
+        if (capturedState.getBlock() != Blocks.AIR) {
             boolean placed = false;
-
             for (int i = 0; i <= 3; i++) {
                 BlockPos checkPos = basePos.above(i);
                 if (this.level().getBlockState(checkPos).canBeReplaced()) {
                     this.level().setBlock(checkPos, capturedState, 3);
                     BlockEntity be = this.level().getBlockEntity(checkPos);
-                    if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                        be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
-                    }
-                    placed = true;
-                    break;
+                    if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
+                    placed = true; break;
                 }
             }
-
             if (!placed) {
                 if (this.level().getBlockState(basePos).canBeReplaced()) {
                     this.level().setBlock(basePos, capturedState, 3);
                     BlockEntity be = this.level().getBlockEntity(basePos);
-                    if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                        be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
-                    }
+                    if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
                 } else {
-                    ItemStack blockItem = new ItemStack(capturedBlock.asItem());
-                    if (!this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                        CustomData customData = CustomData.of(this.entityData.get(CAPTURED_BLOCK_NBT));
-                        blockItem.set(DataComponents.BLOCK_ENTITY_DATA, customData);
-                    }
+                    ItemStack blockItem = new ItemStack(capturedState.getBlock().asItem());
+                    if (!this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) blockItem.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(this.entityData.get(CAPTURED_BLOCK_NBT)));
+                    if (!player.getInventory().add(blockItem)) this.spawnAtLocation(blockItem);
+                    else this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
+                }
+            }
+        }
 
-                    if (!player.getInventory().add(blockItem)) {
-                        this.spawnAtLocation(blockItem);
-                    } else {
-                        this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
-                    }
+        if (currentTarget != null) {
+            ServerLevel targetLevel = this.getServer().getLevel(currentTarget.dimension());
+            if (targetLevel != null) {
+                BlockEntity be = targetLevel.getBlockEntity(currentTarget.pos());
+                if (be instanceof ZephyrDockBlockEntity dockBE) {
+                    dockBE.setOccupied(false);
+                    dockBE.setChanged();
+                }
+                BlockState targetState = targetLevel.getBlockState(currentTarget.pos());
+                if (targetState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                    targetLevel.setBlock(currentTarget.pos(), targetState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
                 }
             }
         }
@@ -622,62 +710,50 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide() && !this.isRemoved()) {
+            if (!this.entityData.get(WAITING_FOR_LAUNCH) && !this.entityData.get(WAITING_AT_DOCK)) return false;
 
-            boolean isGrounded = this.entityData.get(WAITING_FOR_LAUNCH) || this.entityData.get(WAITING_AT_DOCK);
-
-            if (!isGrounded) {
-                return false;
-            }
+            GlobalPos currentTarget = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
+            restoreHubLinkIfNecessary();
 
             this.spawnAtLocation(this.haulerItem);
-
             BlockState capturedState = this.entityData.get(CAPTURED_BLOCK);
-            Block capturedBlock = capturedState.getBlock();
             BlockPos pos = this.blockPosition();
 
-            if (capturedBlock != Blocks.AIR) {
+            if (capturedState.getBlock() != Blocks.AIR) {
                 boolean placed = false;
-
                 for (int i = 0; i <= 3; i++) {
                     BlockPos checkPos = pos.above(i);
                     if (this.level().getBlockState(checkPos).canBeReplaced() && this.level().getBlockState(checkPos.below()).isFaceSturdy(this.level(), checkPos.below(), Direction.UP)) {
                         this.level().setBlock(checkPos, capturedState, 3);
                         BlockEntity be = this.level().getBlockEntity(checkPos);
-                        if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                            be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
-                        }
-                        placed = true;
-                        break;
+                        if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
+                        placed = true; break;
                     }
                 }
-
                 if (!placed) {
                     if (this.level().getBlockState(pos).canBeReplaced()) {
                         this.level().setBlock(pos, capturedState, 3);
                         BlockEntity be = this.level().getBlockEntity(pos);
-                        if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                            be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
-                        }
+                        if (be != null && !this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) be.loadWithComponents(this.entityData.get(CAPTURED_BLOCK_NBT), this.level().registryAccess());
                     } else {
-                        ItemStack blockItem = new ItemStack(capturedBlock.asItem());
-                        if (!this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) {
-                            CustomData customData = CustomData.of(this.entityData.get(CAPTURED_BLOCK_NBT));
-                            blockItem.set(DataComponents.BLOCK_ENTITY_DATA, customData);
-                        }
+                        ItemStack blockItem = new ItemStack(capturedState.getBlock().asItem());
+                        if (!this.entityData.get(CAPTURED_BLOCK_NBT).isEmpty()) blockItem.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(this.entityData.get(CAPTURED_BLOCK_NBT)));
                         this.spawnAtLocation(blockItem);
                     }
                 }
             }
 
-            if (this.haulerItem.has(ZephyrDataComponents.TARGET_POS.get())) {
-                GlobalPos targetPos = this.haulerItem.get(ZephyrDataComponents.TARGET_POS.get());
-                if (targetPos != null) {
-                    ServerLevel targetLevel = this.getServer().getLevel(targetPos.dimension());
-                    if (targetLevel != null) {
-                        BlockEntity be = targetLevel.getBlockEntity(targetPos.pos());
-                        if (be instanceof ZephyrDockBlockEntity dockBE) {
-                            dockBE.setOccupied(false);
-                        }
+            if (currentTarget != null) {
+                ServerLevel targetLevel = this.getServer().getLevel(currentTarget.dimension());
+                if (targetLevel != null) {
+                    BlockEntity be = targetLevel.getBlockEntity(currentTarget.pos());
+                    if (be instanceof ZephyrDockBlockEntity dockBE) {
+                        dockBE.setOccupied(false);
+                        dockBE.setChanged();
+                    }
+                    BlockState targetState = targetLevel.getBlockState(currentTarget.pos());
+                    if (targetState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.RESERVED)) {
+                        targetLevel.setBlock(currentTarget.pos(), targetState.setValue(com.zephyrhauler.block.ZephyrDockBlock.RESERVED, false), 3);
                     }
                 }
             }
@@ -690,11 +766,8 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController<>(this, "controller", 5, state -> {
-            if (this.entityData.get(WAITING_FOR_LAUNCH) || this.entityData.get(WAITING_AT_DOCK) || this.getDeltaMovement().y == 0) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.zephyr_hauler.idle"));
-            } else {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation.zephyr_hauler.fly"));
-            }
+            if (this.entityData.get(WAITING_FOR_LAUNCH) || this.entityData.get(WAITING_AT_DOCK) || this.getDeltaMovement().y == 0) return state.setAndContinue(RawAnimation.begin().thenLoop("animation.zephyr_hauler.idle"));
+            else return state.setAndContinue(RawAnimation.begin().thenLoop("animation.zephyr_hauler.fly"));
         }).triggerableAnim("deny_action", RawAnimation.begin().thenPlay("animation.zephyr_hauler.deny")));
     }
 
@@ -706,8 +779,8 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains("CapturedBlockEntityData")) { this.entityData.set(CAPTURED_BLOCK_NBT, tag.getCompound("CapturedBlockEntityData")); }
-        if (tag.contains("HaulerItem")) { this.haulerItem = ItemStack.parseOptional(this.level().registryAccess(), tag.getCompound("HaulerItem")); }
+        if (tag.contains("CapturedBlockEntityData")) this.entityData.set(CAPTURED_BLOCK_NBT, tag.getCompound("CapturedBlockEntityData"));
+        if (tag.contains("HaulerItem")) this.haulerItem = ItemStack.parseOptional(this.level().registryAccess(), tag.getCompound("HaulerItem"));
         this.originY = tag.getDouble("OriginY");
         this.entityData.set(CAPTURED_BLOCK, net.minecraft.nbt.NbtUtils.readBlockState(this.level().holderLookup(net.minecraft.core.registries.Registries.BLOCK), tag.getCompound("CapturedBlockState")));
         this.entityData.set(IS_DESCENDING, tag.getBoolean("IsDescending"));
@@ -715,12 +788,11 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         this.entityData.set(WAITING_FOR_LAUNCH, tag.getBoolean("WaitingForLaunch"));
         this.entityData.set(WAITING_AT_DOCK, tag.getBoolean("WaitingAtDock"));
 
-        if (tag.contains("HaulerColor")) { this.setColor(tag.getString("HaulerColor")); }
-        if (tag.contains("SpeedMultiplier")) { this.entityData.set(SPEED_MULTIPLIER, tag.getFloat("SpeedMultiplier")); }
-        if (tag.contains("FuelTier")) { this.entityData.set(FUEL_TIER, tag.getInt("FuelTier")); }
-
-        if (tag.contains("SyncedDurability")) { this.entityData.set(SYNCED_DURABILITY, tag.getInt("SyncedDurability")); }
-        if (tag.contains("WeightTier")) { this.entityData.set(WEIGHT_TIER, tag.getInt("WeightTier")); }
+        if (tag.contains("HaulerColor")) this.setColor(tag.getString("HaulerColor"));
+        if (tag.contains("SpeedMultiplier")) this.entityData.set(SPEED_MULTIPLIER, tag.getFloat("SpeedMultiplier"));
+        if (tag.contains("FuelTier")) this.entityData.set(FUEL_TIER, tag.getInt("FuelTier"));
+        if (tag.contains("SyncedDurability")) this.entityData.set(SYNCED_DURABILITY, tag.getInt("SyncedDurability"));
+        if (tag.contains("WeightTier")) this.entityData.set(WEIGHT_TIER, tag.getInt("WeightTier"));
     }
 
     @Override
@@ -737,7 +809,6 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         tag.putString("HaulerColor", this.getColor());
         tag.putFloat("SpeedMultiplier", this.entityData.get(SPEED_MULTIPLIER));
         tag.putInt("FuelTier", this.entityData.get(FUEL_TIER));
-
         tag.putInt("SyncedDurability", this.entityData.get(SYNCED_DURABILITY));
         tag.putInt("WeightTier", this.entityData.get(WEIGHT_TIER));
     }
@@ -752,14 +823,10 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
             if (state != null && !state.isAir()) {
                 this.cachedDisplayItem = new ItemStack(state.getBlock().asItem());
-
                 if (nbt != null && !nbt.isEmpty()) {
                     BlockEntity dummyBE = BlockEntity.loadStatic(this.blockPosition(), state, nbt, this.level().registryAccess());
-                    if (dummyBE != null) {
-                        dummyBE.saveToItem(this.cachedDisplayItem, this.level().registryAccess());
-                    } else {
-                        this.cachedDisplayItem.set(net.minecraft.core.component.DataComponents.BLOCK_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
-                    }
+                    if (dummyBE != null) dummyBE.saveToItem(this.cachedDisplayItem, this.level().registryAccess());
+                    else this.cachedDisplayItem.set(net.minecraft.core.component.DataComponents.BLOCK_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
                 }
             }
         }

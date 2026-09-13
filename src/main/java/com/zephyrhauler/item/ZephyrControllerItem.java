@@ -1,6 +1,7 @@
 package com.zephyrhauler.item;
 
 import com.zephyrhauler.block.entity.ZephyrDockBlockEntity;
+import com.zephyrhauler.block.entity.ZephyrHubBlockEntity;
 import com.zephyrhauler.component.DockEntry;
 import com.zephyrhauler.component.ZephyrDataComponents;
 import net.minecraft.ChatFormatting;
@@ -17,8 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -45,8 +47,7 @@ public class ZephyrControllerItem extends Item implements GeoItem {
         controllers.add(new AnimationController<>(this, "controller", 5, state -> {
             state.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("idle"));
             return PlayState.CONTINUE;
-        })
-                .triggerableAnim("writing_trigger", RawAnimation.begin().thenLoop("writing")));
+        }).triggerableAnim("writing_trigger", RawAnimation.begin().thenLoop("writing")));
     }
 
     @Override
@@ -56,7 +57,8 @@ public class ZephyrControllerItem extends Item implements GeoItem {
 
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader level, BlockPos pos, Player player) {
-        return level.getBlockState(pos).getBlock() instanceof com.zephyrhauler.block.ZephyrDockBlock;
+        Block block = level.getBlockState(pos).getBlock();
+        return block instanceof com.zephyrhauler.block.ZephyrDockBlock || block instanceof com.zephyrhauler.block.ZephyrHubBlock;
     }
 
     @Override
@@ -71,43 +73,74 @@ public class ZephyrControllerItem extends Item implements GeoItem {
         BlockEntity be = level.getBlockEntity(pos);
 
         if (be instanceof ZephyrDockBlockEntity dockBE && player.isShiftKeyDown()) {
+
+            BlockState targetState = level.getBlockState(pos);
+            if (targetState.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.HUB_MODE) &&
+                    targetState.getValue(com.zephyrhauler.block.ZephyrDockBlock.HUB_MODE)) {
+                if (!level.isClientSide) {
+                    player.displayClientMessage(
+                            Component.translatable("message.zephyr_hauler.hub.link_to_hub").withStyle(ChatFormatting.RED),
+                            true
+                    );
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+
             String dockName = dockBE.getCustomName().isEmpty() ? Component.translatable("dock.zephyr_hauler.generic_dock").getString() : dockBE.getCustomName();
             GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
-            DockEntry newEntry = new DockEntry(dockBE.getDockId(), dockName, globalPos);
 
-            List<DockEntry> currentDocks = new ArrayList<>(stack.getOrDefault(ZephyrDataComponents.SAVED_DOCKS.get(), List.of()));
+            DockEntry newEntry = new DockEntry(dockBE.getDockId(), dockName, globalPos, false);
+            saveEntryToController(stack, player, level, newEntry, false);
 
-            boolean exactMatchExists = currentDocks.stream().anyMatch(entry -> entry.dockId().equals(dockBE.getDockId()));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
 
-            if (exactMatchExists) {
-                currentDocks.removeIf(entry -> entry.dockId().equals(dockBE.getDockId()));
-                currentDocks.add(newEntry);
-                stack.set(ZephyrDataComponents.SAVED_DOCKS.get(), currentDocks);
+        else if (be instanceof ZephyrHubBlockEntity hubBE && player.isShiftKeyDown()) {
 
-                if (!level.isClientSide) {
-                    player.displayClientMessage(
-                            Component.translatable("message.zephyr_hauler.controller.dock_updated",
-                                    Component.literal(dockName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW),
-                            true
-                    );
-                }
-            } else {
-                currentDocks.add(newEntry);
-                stack.set(ZephyrDataComponents.SAVED_DOCKS.get(), currentDocks);
+            String hubName = hubBE.getCustomName().isEmpty() ? "Zephyr Hub" : hubBE.getCustomName();
+            GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
 
-                if (!level.isClientSide) {
-                    player.displayClientMessage(
-                            Component.translatable("message.zephyr_hauler.controller.dock_registered",
-                                    Component.literal(dockName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GREEN),
-                            true
-                    );
-                }
-            }
+            DockEntry newEntry = new DockEntry(hubBE.getHubId(), hubName, globalPos, true);
+            saveEntryToController(stack, player, level, newEntry, true);
 
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         return super.useOn(context);
+    }
+
+    private void saveEntryToController(ItemStack stack, Player player, Level level, DockEntry newEntry, boolean isHubMsg) {
+        List<DockEntry> currentDocks = new ArrayList<>(stack.getOrDefault(ZephyrDataComponents.SAVED_DOCKS.get(), List.of()));
+        boolean exactMatchExists = currentDocks.stream().anyMatch(entry -> entry.dockId().equals(newEntry.dockId()));
+
+        if (exactMatchExists) {
+            currentDocks.removeIf(entry -> entry.dockId().equals(newEntry.dockId()));
+            currentDocks.add(newEntry);
+            stack.set(ZephyrDataComponents.SAVED_DOCKS.get(), currentDocks);
+
+            if (!level.isClientSide) {
+                String langKey = isHubMsg ? "message.zephyr_hauler.controller.hub_updated" : "message.zephyr_hauler.controller.dock_updated";
+                ChatFormatting color = isHubMsg ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.YELLOW;
+
+                player.displayClientMessage(
+                        Component.translatable(langKey, Component.literal(newEntry.name()).withStyle(ChatFormatting.WHITE)).withStyle(color),
+                        true
+                );
+            }
+        } else {
+            currentDocks.add(newEntry);
+            stack.set(ZephyrDataComponents.SAVED_DOCKS.get(), currentDocks);
+
+            if (!level.isClientSide) {
+                String langKey = isHubMsg ? "message.zephyr_hauler.controller.hub_registered" : "message.zephyr_hauler.controller.dock_registered";
+                ChatFormatting color = isHubMsg ? ChatFormatting.AQUA : ChatFormatting.GREEN;
+
+                player.displayClientMessage(
+                        Component.translatable(langKey, Component.literal(newEntry.name()).withStyle(ChatFormatting.WHITE)).withStyle(color),
+                        true
+                );
+            }
+        }
     }
 
     @Override
@@ -117,7 +150,6 @@ public class ZephyrControllerItem extends Item implements GeoItem {
         if (!player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 long id = GeoItem.getOrAssignId(stack, (ServerLevel) level);
-
                 this.triggerAnim(player, id, "controller", "writing_trigger");
 
                 player.openMenu(new net.minecraft.world.SimpleMenuProvider(
@@ -139,7 +171,10 @@ public class ZephyrControllerItem extends Item implements GeoItem {
             tooltip.add(Component.translatable("tooltip.zephyr_hauler.controller.no_docks").withStyle(ChatFormatting.GRAY));
             tooltip.add(Component.translatable("tooltip.zephyr_hauler.controller.register_hint").withStyle(ChatFormatting.YELLOW));
         } else {
-            tooltip.add(Component.translatable("tooltip.zephyr_hauler.controller.saved_count", docks.size()).withStyle(ChatFormatting.GOLD));
+            long dockCount = docks.stream().filter(e -> !e.isHub()).count();
+            long hubCount = docks.stream().filter(DockEntry::isHub).count();
+
+            tooltip.add(Component.literal("Docks: " + dockCount + " | Hubs: " + hubCount).withStyle(ChatFormatting.GOLD));
 
             boolean isAltDown = false;
             try {
@@ -147,9 +182,7 @@ public class ZephyrControllerItem extends Item implements GeoItem {
             } catch (Exception ignored) { }
 
             if (isAltDown) {
-                for (int i = 0; i < docks.size(); i++) {
-                    DockEntry entry = docks.get(i);
-                    
+                for (DockEntry entry : docks) {
                     String dimPath = entry.pos().dimension().location().getPath();
                     String dimPrefix = "[?]";
                     ChatFormatting dimColor = ChatFormatting.GRAY;
@@ -161,10 +194,14 @@ public class ZephyrControllerItem extends Item implements GeoItem {
                         dimPrefix = "[" + dimPath.substring(0, 1).toUpperCase() + "]";
                     }
 
+                    ChatFormatting nameColor = entry.isHub() ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.AQUA;
+                    String typePrefix = entry.isHub() ? "[H] " : "[D] ";
+
                     tooltip.add(Component.literal(" - ")
                             .withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(dimPrefix + " ").withStyle(dimColor))
-                            .append(Component.literal(entry.name()).withStyle(ChatFormatting.AQUA))
+                            .append(Component.literal(typePrefix).withStyle(ChatFormatting.DARK_GRAY))
+                            .append(Component.literal(entry.name()).withStyle(nameColor))
                             .append(Component.literal(" (" + entry.pos().pos().toShortString() + ")").withStyle(ChatFormatting.DARK_GRAY)));
                 }
             } else {

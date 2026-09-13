@@ -1,0 +1,28 @@
+{
+  "multipart": [
+    {
+      "when": { "down": "true" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_core" }
+    },
+    {
+      "when": { "down": "false" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_core_floating" }
+    },
+    {
+      "when": { "north": "true" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_arm" }
+    },
+    {
+      "when": { "east": "true" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_arm", "y": 90 }
+    },
+    {
+      "when": { "south": "true" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_arm", "y": 180 }
+    },
+    {
+      "when": { "west": "true" },
+      "apply": { "model": "zephyr_hauler:block/zephyr_cable_arm", "y": 270 }
+    }
+  ]
+}

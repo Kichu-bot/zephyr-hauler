@@ -2,8 +2,10 @@
   "replace": false,
   "values": [
     "zephyr_hauler:zephyr_dock",
+    "zephyr_hauler:zephyr_hub",
     "zephyr_hauler:zephyr_station",
-    "minecraft:spawner",
+    "zephyr_hauler:zephyr_auto_station",
+    "zephyr_hauler:wind_sensor",
     "minecraft:command_block",
     "minecraft:repeating_command_block",
     "minecraft:chain_command_block",

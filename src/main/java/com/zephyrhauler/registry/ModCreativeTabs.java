@@ -30,8 +30,13 @@ public class ModCreativeTabs {
 
                 output.accept(ModItems.ZEPHYR_CONTROLLER.get());
                 output.accept(ModItems.ZEPHYR_DOCK_ITEM.get());
-                output.accept(ModItems.ZEPHYR_STATION_ITEM.get()); // La estación de reparación
+                output.accept(ModItems.ZEPHYR_HUB_ITEM.get());
+                output.accept(ModItems.ZEPHYR_CABLE_ITEM.get());
+                output.accept(ModItems.ZEPHYR_STATION_ITEM.get());
+                output.accept(ModItems.ZEPHYR_AUTO_STATION_ITEM.get());
                 output.accept(ModItems.WIND_METER.get());
+                output.accept(ModItems.WIND_SENSOR_ITEM.get());
+                output.accept(ModItems.ZEPHYR_LAUNCHER_ITEM.get());
 
                 String[] colors = {
                         "white", "orange", "magenta", "light_blue", "yellow", "lime",

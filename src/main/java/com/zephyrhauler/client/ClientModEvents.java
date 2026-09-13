@@ -2,14 +2,13 @@ package com.zephyrhauler.client;
 
 import com.zephyrhauler.ZephyrHauler;
 import com.zephyrhauler.client.gui.screen.ZephyrControllerScreen;
-import com.zephyrhauler.client.renderer.ZephyrHaulerItemRenderer;
-import com.zephyrhauler.client.renderer.ZephyrControllerItemRenderer;
-import com.zephyrhauler.client.renderer.ZephyrStationItemRenderer;
-import com.zephyrhauler.client.renderer.ZephyrDockItemRenderer;
-import com.zephyrhauler.client.renderer.WindMeterRenderer; // <-- IMPORTACIÓN DEL WIND METER
-import com.zephyrhauler.client.renderer.ZephyrHaulerRenderer;
+import com.zephyrhauler.client.gui.screen.ZephyrAutoStationScreen;
+import com.zephyrhauler.client.gui.screen.ZephyrLauncherScreen;
+import com.zephyrhauler.client.renderer.*;
+import com.zephyrhauler.client.renderer.block.ZephyrAutoStationRenderer;
 import com.zephyrhauler.client.renderer.block.ZephyrStationRenderer;
 import com.zephyrhauler.client.renderer.block.ZephyrDockRenderer;
+import com.zephyrhauler.client.renderer.block.ZephyrLauncherRenderer;
 import com.zephyrhauler.registry.ModBlockEntities;
 import com.zephyrhauler.registry.ModEntities;
 import com.zephyrhauler.registry.ModItems;
@@ -31,18 +30,24 @@ public class ClientModEvents {
         event.registerEntityRenderer(ModEntities.ZEPHYR_HAULER.get(), ZephyrHaulerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ZEPHYR_STATION_BE.get(), ZephyrStationRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ZEPHYR_DOCK_BE.get(), ZephyrDockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ZEPHYR_AUTO_STATION_BE.get(), ZephyrAutoStationRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ZEPHYR_LAUNCHER_BE.get(), ZephyrLauncherRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIND_SENSOR_BE.get(), com.zephyrhauler.client.renderer.block.WindSensorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ZEPHYR_HUB_BE.get(), com.zephyrhauler.client.renderer.block.ZephyrHubRenderer::new);
     }
 
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.ZEPHYR_CONTROLLER_MENU.get(), ZephyrControllerScreen::new);
+        event.register(ModMenus.ZEPHYR_AUTO_STATION_MENU.get(), ZephyrAutoStationScreen::new);
+        event.register(ModMenus.ZEPHYR_LAUNCHER_MENU.get(), ZephyrLauncherScreen::new);
+        event.register(ModMenus.WIND_SENSOR_MENU.get(), com.zephyrhauler.client.gui.screen.WindSensorScreen::new);
     }
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
             private ZephyrHaulerItemRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -54,7 +59,6 @@ public class ClientModEvents {
 
         event.registerItem(new IClientItemExtensions() {
             private ZephyrControllerItemRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -66,7 +70,6 @@ public class ClientModEvents {
 
         event.registerItem(new IClientItemExtensions() {
             private ZephyrStationItemRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -78,7 +81,6 @@ public class ClientModEvents {
 
         event.registerItem(new IClientItemExtensions() {
             private ZephyrDockItemRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -90,7 +92,6 @@ public class ClientModEvents {
 
         event.registerItem(new IClientItemExtensions() {
             private WindMeterRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -99,5 +100,49 @@ public class ClientModEvents {
                 return this.renderer;
             }
         }, ModItems.WIND_METER.get());
+
+        event.registerItem(new IClientItemExtensions() {
+            private ZephyrAutoStationItemRenderer renderer;
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new ZephyrAutoStationItemRenderer();
+                }
+                return this.renderer;
+            }
+        }, ModItems.ZEPHYR_AUTO_STATION_ITEM.get());
+
+        event.registerItem(new IClientItemExtensions() {
+            private ZephyrLauncherItemRenderer renderer;
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new ZephyrLauncherItemRenderer();
+                }
+                return this.renderer;
+            }
+        }, ModItems.ZEPHYR_LAUNCHER_ITEM.get());
+
+        event.registerItem(new IClientItemExtensions() {
+            private WindSensorItemRenderer renderer;
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new WindSensorItemRenderer();
+                }
+                return this.renderer;
+            }
+        }, ModItems.WIND_SENSOR_ITEM.get());
+
+        event.registerItem(new IClientItemExtensions() {
+            private ZephyrHubItemRenderer renderer;
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new ZephyrHubItemRenderer();
+                }
+                return this.renderer;
+            }
+        }, ModItems.ZEPHYR_HUB_ITEM.get());
     }
 }

@@ -37,6 +37,19 @@
       "item": "zephyr_hauler:zephyr_hauler",
       "title": "Linking the Hauler",
       "text": "Once your destination is selected in the controller, perform a $(2)Shift + Right-Click$() with your Zephyr Hauler onto the target chest or machine to bind them together and launch!"
+    },
+    {
+      "title": "Dual Management",
+      "type": "patchouli:text",
+      "text": "The Controller features two tabs: $(2)Docks$() for individual landing pads, and $(2)Hubs$() for entire networks.$(br)$(br)When viewing a Hub, you will see a telemetry bracket like $(2)[ 6 | 1 | 0 | 0 ]$(), representing the exact amount of Free, Reserved, Occupied, and Inaccessible docks in that network."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/controller_docks_states.png"
+      ],
+      "title": "hub states",
+      "border": true
     }
   ]
 }

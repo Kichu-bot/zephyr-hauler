@@ -11,7 +11,7 @@
     {
       "title": "Dock States",
       "type": "patchouli:text",
-      "text": "$(2)Free (Green):$() Ready to receive incoming haulers.$(br)$(4)Occupied (Red):$() Currently holding a landed shipment."
+      "text": "$(a)Free (Green):$() Ready to receive incoming haulers.$(br)$(e)Reserved (Yellow):$() A hauler is en route to this dock. Locked for others.$(br)$(c)Occupied (Red):$() Currently holding a landed shipment.$(br)$(8)Inaccessible (Gray):$() Airspace blocked or dock destroyed."
     },
     {
       "type": "patchouli:image",

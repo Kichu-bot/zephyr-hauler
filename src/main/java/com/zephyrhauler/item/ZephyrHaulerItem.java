@@ -1,6 +1,7 @@
 package com.zephyrhauler.item;
 
 import com.zephyrhauler.block.entity.ZephyrDockBlockEntity;
+import com.zephyrhauler.block.entity.ZephyrHubBlockEntity;
 import com.zephyrhauler.component.ZephyrDataComponents;
 import com.zephyrhauler.entity.ZephyrHaulerEntity;
 import com.zephyrhauler.registry.ModEntities;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -47,7 +49,8 @@ public class ZephyrHaulerItem extends Item implements GeoItem {
 
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader level, BlockPos pos, Player player) {
-        return level.getBlockState(pos).getBlock() instanceof com.zephyrhauler.block.ZephyrDockBlock;
+        Block block = level.getBlockState(pos).getBlock();
+        return block instanceof com.zephyrhauler.block.ZephyrDockBlock || block instanceof com.zephyrhauler.block.ZephyrHubBlock;
     }
 
     @Override
@@ -143,9 +146,20 @@ public class ZephyrHaulerItem extends Item implements GeoItem {
         if (be instanceof ZephyrDockBlockEntity dockBE) {
             if (player.isShiftKeyDown()) {
 
+                if (state.hasProperty(com.zephyrhauler.block.ZephyrDockBlock.HUB_MODE) &&
+                        state.getValue(com.zephyrhauler.block.ZephyrDockBlock.HUB_MODE)) {
+                    if (!level.isClientSide) {
+                        player.displayClientMessage(
+                                Component.translatable("message.zephyr_hauler.hub.link_to_hub").withStyle(ChatFormatting.RED),
+                                true
+                        );
+                    }
+                    return InteractionResult.FAIL;
+                }
+
                 if (stack.has(ZephyrDataComponents.TARGET_POS.get())) {
                     if (!level.isClientSide) {
-                        String existingName = stack.getOrDefault(ZephyrDataComponents.TARGET_NAME.get(), "un muelle");
+                        String existingName = stack.getOrDefault(ZephyrDataComponents.TARGET_NAME.get(), "un destino");
                         player.displayClientMessage(
                                 Component.translatable("message.zephyr_hauler.hauler.already_linked", Component.literal(existingName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.RED),
                                 true
@@ -183,6 +197,44 @@ public class ZephyrHaulerItem extends Item implements GeoItem {
                     stack.set(ZephyrDataComponents.LINK_ID.get(), UUID.randomUUID());
                 }
 
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            } else {
+                if (!level.isClientSide) {
+                    player.displayClientMessage(
+                            Component.translatable("message.zephyr_hauler.hauler.link_hint").withStyle(ChatFormatting.YELLOW),
+                            true
+                    );
+                }
+                return InteractionResult.SUCCESS;
+            }
+        }
+        else if (be instanceof ZephyrHubBlockEntity hubBE) {
+            if (player.isShiftKeyDown()) {
+                if (stack.has(ZephyrDataComponents.TARGET_POS.get())) {
+                    if (!level.isClientSide) {
+                        String existingName = stack.getOrDefault(ZephyrDataComponents.TARGET_NAME.get(), "un destino");
+                        player.displayClientMessage(
+                                Component.translatable("message.zephyr_hauler.hauler.already_linked", Component.literal(existingName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.RED),
+                                true
+                        );
+                    }
+                    return InteractionResult.FAIL;
+                }
+
+                String hubName = hubBE.getCustomName();
+                String displayName = hubName.isEmpty() ? "Zephyr Hub" : hubName;
+                GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
+
+                stack.set(ZephyrDataComponents.TARGET_POS.get(), globalPos);
+                stack.set(ZephyrDataComponents.TARGET_NAME.get(), displayName);
+
+                if (!level.isClientSide) {
+                    stack.set(ZephyrDataComponents.LINK_ID.get(), hubBE.getHubId());
+                    player.displayClientMessage(
+                            Component.translatable("message.zephyr_hauler.hauler.linked_success", Component.literal(displayName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.AQUA),
+                            true
+                    );
+                }
                 return InteractionResult.sidedSuccess(level.isClientSide);
             } else {
                 if (!level.isClientSide) {

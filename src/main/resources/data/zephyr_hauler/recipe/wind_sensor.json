@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " V ",
+    "RIR",
+    "SSS"
+  ],
+  "key": {
+    "V": {
+      "item": "zephyr_hauler:wind_meter"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone_torch"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "result": {
+    "id": "zephyr_hauler:wind_sensor",
+    "count": 1
+  }
+}

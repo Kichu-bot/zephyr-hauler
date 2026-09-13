@@ -20,7 +20,8 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(haulerContainer, 0, 80, 20) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem;
+                return stack.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem ||
+                        stack.getItem() instanceof com.zephyrhauler.item.WindSensorItem;
             }
         });
 
@@ -38,9 +39,7 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player player) {
         super.removed(player);
-
         ItemStack stackInSlot = this.haulerContainer.removeItemNoUpdate(0);
-
         if (!stackInSlot.isEmpty()) {
             if (!player.getInventory().add(stackInSlot)) {
                 player.drop(stackInSlot, false);
@@ -60,7 +59,8 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
             if (index == 0) {
                 if (!this.moveItemStackTo(stackInSlot, 1, 37, true)) return ItemStack.EMPTY;
             } else {
-                if (stackInSlot.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem) {
+                if (stackInSlot.getItem() instanceof com.zephyrhauler.item.ZephyrHaulerItem ||
+                        stackInSlot.getItem() instanceof com.zephyrhauler.item.WindSensorItem) {
                     if (!this.moveItemStackTo(stackInSlot, 0, 1, false)) return ItemStack.EMPTY;
                 } else {
                     return ItemStack.EMPTY;
@@ -97,7 +97,7 @@ public class ZephyrControllerMenu extends AbstractContainerMenu {
                 return;
             }
         }
-        
+
         super.clicked(slotId, button, clickType, player);
     }
 }

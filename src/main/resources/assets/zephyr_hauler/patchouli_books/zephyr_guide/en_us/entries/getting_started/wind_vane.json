@@ -1,5 +1,5 @@
 {
-  "name": "Wind Vane",
+  "name": "Wind control",
   "category": "zephyr_hauler:getting_started",
   "icon": "zephyr_hauler:wind_meter",
   "sortnum": 3,
@@ -26,6 +26,28 @@
       ],
       "title": "Reading the Wind",
       "text": "When used successfully, a chat notification will appear showing the precise direction and speed of the wind currents around you."
+    },
+    {
+      "title": "Wind Sensor",
+      "type": "patchouli:text",
+      "text": "For advanced meteorologists, the $(2)Wind Sensor$() automates weather reading. Bind it to a target Dock using the Controller, then place it in the world."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "zephyr_hauler:wind_sensor",
+      "text": "Crafting the Wind Sensor."
+    },
+    {
+      "title": "Redstone Output",
+      "type": "patchouli:text",
+      "text": "Once placed, the Wind Sensor actively monitors the wind blowing towards its linked destination. It outputs a $(4)Redstone Signal$(). Perfect for creating automated smart-launch systems that only dispatch cargo during tailwinds!"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "zephyr_hauler:textures/gui/book/redstone_output.png"
+      ],
+      "title": "Example"
     }
   ]
 }

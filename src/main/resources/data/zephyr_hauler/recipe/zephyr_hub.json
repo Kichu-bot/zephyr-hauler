@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "RDR",
+    "IBI"
+  ],
+  "key": {
+    "C": {
+      "item": "zephyr_hauler:zephyr_controller"
+    },
+    "D": {
+      "item": "zephyr_hauler:zephyr_dock"
+    },
+    "B": {
+      "item": "minecraft:iron_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "zephyr_hauler:zephyr_hub",
+    "count": 1
+  }
+}
