@@ -90,8 +90,6 @@ public class ZephyrWindSystem {
             altitudeMultiplier *= 0.15f;
         }
 
-        // SISTEMA 2D: Calculamos el viento del eje X y Z por separado.
-        // Esto elimina el efecto de "giro circular" y lo hace vagar de forma realista.
         float baseX = getSmoothNoise(time, seed, 0.0003f * weatherVolatility);
         float baseZ = getSmoothNoise(time, seed + 5000, 0.0003f * weatherVolatility);
 
@@ -99,7 +97,6 @@ public class ZephyrWindSystem {
         float gustX = 0.0f;
         float gustZ = 0.0f;
 
-        // Las ráfagas solo ocurren cuando la intensidad supera el umbral
         if (gustIntensity > 0.3f) {
             float gustMult = (gustIntensity - 0.3f) * 2.0f * weatherSpeedMult;
             gustX = getSmoothNoise(time, seed + 12000, 0.015f) * gustMult;
@@ -109,15 +106,12 @@ public class ZephyrWindSystem {
         float finalX = (baseX * 0.25f) + gustX;
         float finalZ = (baseZ * 0.25f) + gustZ;
 
-        // Pitágoras para sacar la velocidad bruta (magnitud del vector)
         float rawSpeed = (float) Math.sqrt((finalX * finalX) + (finalZ * finalZ)) + baseBonusAdd;
         rawSpeed *= altitudeMultiplier;
 
-        // Trigonometría para sacar el ángulo a partir de los dos ejes
         float rawAngle = (float) Math.toDegrees(Math.atan2(finalX, finalZ));
         if (rawAngle < 0) rawAngle += 360.0f;
 
-        // Aplicamos la desviación por gran altitud
         rawAngle = (rawAngle + windShearAngle) % 360.0f;
 
         if (!level.isRaining() && rawSpeed < 0.05f) {
@@ -126,7 +120,6 @@ public class ZephyrWindSystem {
 
         WindDirection currentDirection = WindDirection.fromAngle(rawAngle, rawSpeed);
 
-        // Reconstruimos los vectores X y Z finales limpios y listos para las partículas
         float vectorX = (float) Math.sin(Math.toRadians(rawAngle)) * rawSpeed;
         float vectorZ = (float) Math.cos(Math.toRadians(rawAngle)) * rawSpeed;
 

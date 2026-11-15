@@ -6,7 +6,6 @@ public class ZephyrClientConfig {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
-    // CONFIGURACIÓN DE HOJAS
     public static final ModConfigSpec.BooleanValue ENABLE_LEAVES;
     public static final ModConfigSpec.IntValue LEAF_SPAWN_PERCENT;
     public static final ModConfigSpec.IntValue LEAF_SIZE_PERCENT;
@@ -14,10 +13,8 @@ public class ZephyrClientConfig {
     public static final ModConfigSpec.BooleanValue LEAF_CULLING;
     public static final ModConfigSpec.IntValue LEAF_LIFETIME;
 
-    // CONFIGURACIÓN DE VIENTO
     public static final ModConfigSpec.BooleanValue ENABLE_WIND_EFFECTS;
 
-    // CONFIGURACIÓN DE MEJORAS VISUALES
     public static final ModConfigSpec.BooleanValue ENABLE_VISUAL_UPGRADES;
     public static final ModConfigSpec.BooleanValue SHOW_WAXED_UPGRADE;
     public static final ModConfigSpec.BooleanValue SHOW_REINFORCED_UPGRADE;

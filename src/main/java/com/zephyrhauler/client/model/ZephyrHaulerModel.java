@@ -35,12 +35,10 @@ public class ZephyrHaulerModel extends GeoModel<ZephyrHaulerEntity> {
 
         boolean masterEnabled = ZephyrClientConfig.ENABLE_VISUAL_UPGRADES.get();
 
-        // 1. Reemplazo mutuo (si se apaga en config, vuelve a mostrarse reinforced_base)
         boolean showWaxed = masterEnabled && ZephyrClientConfig.SHOW_WAXED_UPGRADE.get() && entity.hasWaxedUpgrade();
         setBoneHidden("reinforced_base", showWaxed);
         setBoneHidden("up_waxed", !showWaxed);
 
-        // 2. Mejoras aditivas
         boolean hasReinforcedOrNetherite = entity.hasReinforcedUpgrade() || entity.hasNetheriteUpgrade();
         boolean showReinforced = masterEnabled && ZephyrClientConfig.SHOW_REINFORCED_UPGRADE.get() && hasReinforcedOrNetherite;
         setBoneHidden("up_reinforced", !showReinforced);

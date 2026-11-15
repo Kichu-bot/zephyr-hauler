@@ -14,7 +14,7 @@ public class ZephyrLeafParticle extends TextureSheetParticle {
 
     private final float rotSpeed;
     private final float swirlRadius;
-    private final float swirlPhase; // RECUPERADO: Cada hoja tendrá su propio ritmo
+    private final float swirlPhase;
 
     protected ZephyrLeafParticle(ClientLevel level, double x, double y, double z, double r, double g, double b, SpriteSet spriteSet) {
         super(level, x, y, z);
@@ -31,20 +31,16 @@ public class ZephyrLeafParticle extends TextureSheetParticle {
         this.roll = this.random.nextFloat() * ((float) Math.PI * 2F);
 
         this.swirlRadius = 0.02F;
-        // RECUPERADO: Un desfase aleatorio para que no salgan disparadas en la misma dirección
         this.swirlPhase = this.random.nextFloat() * ((float) Math.PI * 2F);
 
         float configSize = ZephyrClientConfig.LEAF_SIZE_PERCENT.get() / 100.0f;
         this.scale(configSize * (0.8f + this.random.nextFloat() * 0.4f));
 
-        // SOLUCIÓN AL "BOOMERANG":
-        // Al nacer, leemos el viento exacto en esta posición y le damos a la hoja
-        // la inercia inicial del viento. Así no empieza desde cero.
         BlockPos pos = BlockPos.containing(this.x, this.y, this.z);
         ZephyrWindSystem.WindInfo initialWind = ZephyrWindSystem.getCurrentWind(level, pos);
 
         this.xd = initialWind.vectorX() * 0.3;
-        this.yd = -0.05; // Un ligero empuje hacia abajo para que se suelte natural
+        this.yd = -0.05;
         this.zd = initialWind.vectorZ() * 0.3;
     }
 
@@ -62,13 +58,11 @@ public class ZephyrLeafParticle extends TextureSheetParticle {
         BlockPos pos = BlockPos.containing(this.x, this.y, this.z);
         ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(this.level, pos);
 
-        // Aceleración suave constante del viento
         if (wind.speedBonus() > 0.0f) {
             this.xd += wind.vectorX() * 0.04;
             this.zd += wind.vectorZ() * 0.04;
         }
 
-        // Remolino usando la "Fase Aleatoria" (swirlPhase) para que la oscilación sea orgánica
         this.xd += Math.sin((this.age * 0.1f) + this.swirlPhase) * this.swirlRadius;
         this.zd += Math.cos((this.age * 0.1f) + this.swirlPhase) * this.swirlRadius;
 

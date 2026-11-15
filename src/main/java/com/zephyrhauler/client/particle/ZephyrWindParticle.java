@@ -18,7 +18,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-// AHORA EXTENDEMOS DE TextureSheetParticle PARA ENGAÑAR AL SHADER
 public class ZephyrWindParticle extends TextureSheetParticle {
 
     private final Vec3[] history;
@@ -29,7 +28,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
     private final boolean isWavy;
     private final float waveSpeed;
 
-    // Añadimos el SpriteSet al constructor
     protected ZephyrWindParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
         super(level, x, y, z);
 
@@ -48,7 +46,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
         this.history[0] = new Vec3(this.x, this.y, this.z);
         this.historyOld[0] = new Vec3(this.x, this.y, this.z);
 
-        // TIÑENDO EL VIENTO SEGÚN EL BIOMA
         BlockPos pos = BlockPos.containing(x, y, z);
         Holder<Biome> biomeHolder = level.getBiome(pos);
         String biomeName = biomeHolder.unwrapKey().map(key -> key.location().getPath().toLowerCase()).orElse("");
@@ -85,7 +82,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
         this.isWavy = this.random.nextFloat() < 0.5f;
         this.waveSpeed = 0.1f + this.random.nextFloat() * 0.15f;
 
-        // CARGAMOS EL SPRITE (Vital para el Shader)
         this.pickSprite(sprites);
     }
 
@@ -122,7 +118,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
 
         Vec3 camPos = camera.getPosition();
 
-        // Obtenemos las coordenadas UV de nuestra textura blanca
         float u0 = this.getU0();
         float u1 = this.getU1();
         float v0 = this.getV0();
@@ -171,8 +166,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
             Vec3 pos3 = pNext.subtract(widthVecNext);
             Vec3 pos4 = pNext.add(widthVecNext);
 
-            // AHORA ENVIAMOS LAS COORDENADAS UV AL SHADER
-            // Nota: Si usas NeoForge 1.21, los métodos son addVertex, setUv, setColor, setLight
             buffer.addVertex((float) pos1.x, (float) pos1.y, (float) pos1.z).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, finalAlpha).setLight(light);
             buffer.addVertex((float) pos2.x, (float) pos2.y, (float) pos2.z).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, finalAlpha).setLight(light);
             buffer.addVertex((float) pos3.x, (float) pos3.y, (float) pos3.z).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, finalAlpha).setLight(light);
@@ -182,7 +175,6 @@ public class ZephyrWindParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        // Usamos el render vanilla oficial. El shader lo reconocerá de inmediato.
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 

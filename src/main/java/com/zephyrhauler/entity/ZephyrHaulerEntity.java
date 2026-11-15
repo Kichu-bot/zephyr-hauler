@@ -516,21 +516,20 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 else if (wTier == 4) baseSpeed = 0.025;
             }
 
-            // MEJORA 2: DOWNDRAFTS DE TORMENTA
+
             if (!this.entityData.get(IS_DESCENDING) && this.level().isThundering()) {
-                baseSpeed *= 0.6; // Lucha por subir contra el aire frío de la tormenta
+                baseSpeed *= 0.6;
             }
 
             double targetSpeed = baseSpeed * this.entityData.get(SPEED_MULTIPLIER);
 
-            // MEJORA 1: CORRIENTES TÉRMICAS (UPDRAFTS)
+
             if (!this.entityData.get(IS_DESCENDING) && this.getY() < this.originY + 15) {
-                // Checamos dos bloques debajo del dock (originY - 2)
                 BlockPos thermalPos = BlockPos.containing(this.getX(), this.originY - 2, this.getZ());
                 BlockState stateBelow = this.level().getBlockState(thermalPos);
 
                 if (stateBelow.is(Blocks.MAGMA_BLOCK) || stateBelow.is(Blocks.CAMPFIRE) || stateBelow.is(Blocks.LAVA) || stateBelow.is(Blocks.FIRE) || stateBelow.is(Blocks.SOUL_CAMPFIRE) || stateBelow.is(Blocks.SOUL_FIRE)) {
-                    targetSpeed *= 2.0; // Doble velocidad de despegue
+                    targetSpeed *= 2.0;
 
                     if (this.level().isClientSide() && this.random.nextInt(3) == 0) {
                         this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, this.getX(), this.originY - 1, this.getZ(), 0, 0.1, 0);
@@ -540,19 +539,16 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
 
             double smoothY = currentY + (targetSpeed - currentY) * 0.15;
 
-            // MEJORA 3: TURBULENCIA VISUAL (X/Z)
             double turbX = 0;
             double turbZ = 0;
 
             com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level(), this.blockPosition());
 
-            // Efecto de Goma Elástica para que no se salga del 3x3
             double centerX = Math.floor(this.getX()) + 0.5;
             double centerZ = Math.floor(this.getZ()) + 0.5;
             double driftX = this.getX() - centerX;
             double driftZ = this.getZ() - centerZ;
 
-            // Temblor aleatorio basado en la fuerza del viento
             double jitterX = (this.random.nextDouble() - 0.5) * 0.02 * wind.speedBonus();
             double jitterZ = (this.random.nextDouble() - 0.5) * 0.02 * wind.speedBonus();
 
