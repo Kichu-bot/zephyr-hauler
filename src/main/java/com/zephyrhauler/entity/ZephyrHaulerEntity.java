@@ -59,6 +59,8 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Integer> SYNCED_DURABILITY = SynchedEntityData.defineId(ZephyrHaulerEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> WEIGHT_TIER = SynchedEntityData.defineId(ZephyrHaulerEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Byte> UPGRADE_FLAGS = SynchedEntityData.defineId(ZephyrHaulerEntity.class, EntityDataSerializers.BYTE);
+
     private ItemStack cachedDisplayItem = ItemStack.EMPTY;
     private ItemStack haulerItem = ItemStack.EMPTY;
     private double originY;
@@ -128,6 +130,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         this.entityData.set(CAPTURED_BLOCK_NBT, blockEntityData);
         this.haulerItem = haulerItem;
         this.originY = this.getY();
+        this.syncUpgradesFromItem();
 
         this.setColor(haulerItem.getOrDefault(ZephyrDataComponents.HAULER_COLOR.get(), "white"));
         long totalItemCount = countItemsRecursively(blockEntityData);
@@ -166,6 +169,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         builder.define(FUEL_TIER, 0);
         builder.define(SYNCED_DURABILITY, 8);
         builder.define(WEIGHT_TIER, 0);
+        builder.define(UPGRADE_FLAGS, (byte) 0);
     }
 
     @Override
@@ -312,17 +316,24 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                                 double dz = targetGlobalPos.pos().getZ() - originPos.getZ();
 
                                 if (dx != 0 || dz != 0) {
-                                    com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level());
+                                    com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level(), originPos);
+
                                     double travelLength = Math.sqrt(dx * dx + dz * dz);
                                     double dirX = dx / travelLength;
                                     double dirZ = dz / travelLength;
-                                    double windLength = Math.sqrt(wind.direction().x * wind.direction().x + wind.direction().z * wind.direction().z);
 
-                                    if (windLength > 0) {
-                                        double dotProduct = (dirX * (wind.direction().x / windLength)) + (dirZ * (wind.direction().z / windLength));
-                                        float altitudeMultiplier = this.getY() > 128 ? 1.5f : (this.getY() < 60 ? 0.5f : 1.0f);
-                                        float windInertiaNerf = 1.0f - (wTier * 0.15f);
-                                        speedMult *= Math.max(0.2f, 1.0f + (float)(dotProduct * wind.speedBonus() * altitudeMultiplier * Math.max(0.2f, windInertiaNerf)));
+                                    double windDirX = Math.sin(Math.toRadians(wind.rawAngle()));
+                                    double windDirZ = Math.cos(Math.toRadians(wind.rawAngle()));
+
+                                    // MEJORA 4: INERCIA AERODINÁMICA REAL
+                                    if (wind.speedBonus() > 0.0f) {
+                                        double dotProduct = (dirX * windDirX) + (dirZ * windDirZ);
+
+                                        // Tier 0 (ligero) = 1.0 influencia. Tier 4 (pesado) = 0.2 influencia.
+                                        float windInfluence = 1.0f - (wTier * 0.20f);
+
+                                        float windEffect = (float)(dotProduct * wind.speedBonus() * windInfluence);
+                                        speedMult *= Math.max(0.2f, 1.0f + windEffect);
                                     }
                                 }
                             }
@@ -334,8 +345,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                             if (fuelTier == 1) this.level().playSound(null, this.blockPosition(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.NEUTRAL, 1.0F, 1.0F);
                             else if (fuelTier == 2) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_WARN, SoundSource.NEUTRAL, 0.5F, 1.0F);
                             else if (fuelTier == 3) this.level().playSound(null, this.blockPosition(), SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.5F, 1.5F);
-                            else if (fuelTier == 4) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.NEUTRAL, 0.5F, 2.0F);
-                            else if (fuelTier == 5) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.NEUTRAL, 1.0F, 1.5F);
+                            else if (fuelTier >= 4) this.level().playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.NEUTRAL, 0.5F, 2.0F);
 
                             player.displayClientMessage(Component.translatable("message.zephyr_hauler.entity.launch_info", wTier, fuelTier).withStyle(ChatFormatting.AQUA), true);
                         }
@@ -446,17 +456,21 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 double dz = targetGlobalPos.pos().getZ() - originPos.getZ();
 
                 if (dx != 0 || dz != 0) {
-                    com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level());
+                    com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level(), originPos);
+
                     double travelLength = Math.sqrt(dx * dx + dz * dz);
                     double dirX = dx / travelLength;
                     double dirZ = dz / travelLength;
-                    double windLength = Math.sqrt(wind.direction().x * wind.direction().x + wind.direction().z * wind.direction().z);
 
-                    if (windLength > 0) {
-                        double dotProduct = (dirX * (wind.direction().x / windLength)) + (dirZ * (wind.direction().z / windLength));
-                        float altitudeMultiplier = this.getY() > 128 ? 1.5f : (this.getY() < 60 ? 0.5f : 1.0f);
-                        float windInertiaNerf = 1.0f - (wTier * 0.15f);
-                        speedMult *= Math.max(0.2f, 1.0f + (float)(dotProduct * wind.speedBonus() * altitudeMultiplier * Math.max(0.2f, windInertiaNerf)));
+                    double windDirX = Math.sin(Math.toRadians(wind.rawAngle()));
+                    double windDirZ = Math.cos(Math.toRadians(wind.rawAngle()));
+
+                    // MEJORA 4: INERCIA AERODINÁMICA REAL
+                    if (wind.speedBonus() > 0.0f) {
+                        double dotProduct = (dirX * windDirX) + (dirZ * windDirZ);
+                        float windInfluence = 1.0f - (wTier * 0.20f);
+                        float windEffect = (float)(dotProduct * wind.speedBonus() * windInfluence);
+                        speedMult *= Math.max(0.2f, 1.0f + windEffect);
                     }
                 }
             }
@@ -502,9 +516,50 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
                 else if (wTier == 4) baseSpeed = 0.025;
             }
 
+            // MEJORA 2: DOWNDRAFTS DE TORMENTA
+            if (!this.entityData.get(IS_DESCENDING) && this.level().isThundering()) {
+                baseSpeed *= 0.6; // Lucha por subir contra el aire frío de la tormenta
+            }
+
             double targetSpeed = baseSpeed * this.entityData.get(SPEED_MULTIPLIER);
+
+            // MEJORA 1: CORRIENTES TÉRMICAS (UPDRAFTS)
+            if (!this.entityData.get(IS_DESCENDING) && this.getY() < this.originY + 15) {
+                // Checamos dos bloques debajo del dock (originY - 2)
+                BlockPos thermalPos = BlockPos.containing(this.getX(), this.originY - 2, this.getZ());
+                BlockState stateBelow = this.level().getBlockState(thermalPos);
+
+                if (stateBelow.is(Blocks.MAGMA_BLOCK) || stateBelow.is(Blocks.CAMPFIRE) || stateBelow.is(Blocks.LAVA) || stateBelow.is(Blocks.FIRE) || stateBelow.is(Blocks.SOUL_CAMPFIRE) || stateBelow.is(Blocks.SOUL_FIRE)) {
+                    targetSpeed *= 2.0; // Doble velocidad de despegue
+
+                    if (this.level().isClientSide() && this.random.nextInt(3) == 0) {
+                        this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, this.getX(), this.originY - 1, this.getZ(), 0, 0.1, 0);
+                    }
+                }
+            }
+
             double smoothY = currentY + (targetSpeed - currentY) * 0.15;
-            this.setDeltaMovement(0, smoothY, 0);
+
+            // MEJORA 3: TURBULENCIA VISUAL (X/Z)
+            double turbX = 0;
+            double turbZ = 0;
+
+            com.zephyrhauler.util.ZephyrWindSystem.WindInfo wind = com.zephyrhauler.util.ZephyrWindSystem.getCurrentWind(this.level(), this.blockPosition());
+
+            // Efecto de Goma Elástica para que no se salga del 3x3
+            double centerX = Math.floor(this.getX()) + 0.5;
+            double centerZ = Math.floor(this.getZ()) + 0.5;
+            double driftX = this.getX() - centerX;
+            double driftZ = this.getZ() - centerZ;
+
+            // Temblor aleatorio basado en la fuerza del viento
+            double jitterX = (this.random.nextDouble() - 0.5) * 0.02 * wind.speedBonus();
+            double jitterZ = (this.random.nextDouble() - 0.5) * 0.02 * wind.speedBonus();
+
+            turbX = (wind.vectorX() * 0.05) + jitterX - (driftX * 0.2);
+            turbZ = (wind.vectorZ() * 0.05) + jitterZ - (driftZ * 0.2);
+
+            this.setDeltaMovement(turbX, smoothY, turbZ);
 
             if (this.level().isClientSide()) {
                 double px = this.getX() + (this.random.nextDouble() - 0.5) * 0.5;
@@ -787,6 +842,7 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         this.entityData.set(PATH_BLOCKED, tag.getBoolean("PathBlocked"));
         this.entityData.set(WAITING_FOR_LAUNCH, tag.getBoolean("WaitingForLaunch"));
         this.entityData.set(WAITING_AT_DOCK, tag.getBoolean("WaitingAtDock"));
+        this.syncUpgradesFromItem();
 
         if (tag.contains("HaulerColor")) this.setColor(tag.getString("HaulerColor"));
         if (tag.contains("SpeedMultiplier")) this.entityData.set(SPEED_MULTIPLIER, tag.getFloat("SpeedMultiplier"));
@@ -832,4 +888,21 @@ public class ZephyrHaulerEntity extends Entity implements GeoEntity {
         }
         return this.cachedDisplayItem;
     }
+
+    private void syncUpgradesFromItem() {
+        java.util.List<String> upgrades = this.haulerItem.getOrDefault(ZephyrDataComponents.HAULER_UPGRADES.get(), java.util.List.of());
+        byte flags = 0;
+        if (upgrades.contains("waxed")) flags |= 1;
+        if (upgrades.contains("reinforced")) flags |= 2;
+        if (upgrades.contains("lightning_proof") || upgrades.contains("insulated")) flags |= 4;
+        if (upgrades.contains("netherite_plating")) flags |= 8;
+        if (upgrades.contains("shock_absorbers")) flags |= 16;
+        this.entityData.set(UPGRADE_FLAGS, flags);
+    }
+
+    public boolean hasWaxedUpgrade() { return (this.entityData.get(UPGRADE_FLAGS) & 1) != 0; }
+    public boolean hasReinforcedUpgrade() { return (this.entityData.get(UPGRADE_FLAGS) & 2) != 0; }
+    public boolean hasInsulatedUpgrade() { return (this.entityData.get(UPGRADE_FLAGS) & 4) != 0; }
+    public boolean hasNetheriteUpgrade() { return (this.entityData.get(UPGRADE_FLAGS) & 8) != 0; }
+    public boolean hasAbsorbersUpgrade() { return (this.entityData.get(UPGRADE_FLAGS) & 16) != 0; }
 }

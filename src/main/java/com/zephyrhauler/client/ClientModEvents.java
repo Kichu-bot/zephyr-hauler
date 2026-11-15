@@ -4,6 +4,7 @@ import com.zephyrhauler.ZephyrHauler;
 import com.zephyrhauler.client.gui.screen.ZephyrControllerScreen;
 import com.zephyrhauler.client.gui.screen.ZephyrAutoStationScreen;
 import com.zephyrhauler.client.gui.screen.ZephyrLauncherScreen;
+import com.zephyrhauler.client.particle.ZephyrWindParticle;
 import com.zephyrhauler.client.renderer.*;
 import com.zephyrhauler.client.renderer.block.ZephyrAutoStationRenderer;
 import com.zephyrhauler.client.renderer.block.ZephyrStationRenderer;
@@ -21,6 +22,9 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import com.zephyrhauler.registry.ModParticles;
+import com.zephyrhauler.client.particle.ZephyrLeafParticle;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 @EventBusSubscriber(modid = ZephyrHauler.MOD_ID, value = Dist.CLIENT)
 public class ClientModEvents {
@@ -42,6 +46,12 @@ public class ClientModEvents {
         event.register(ModMenus.ZEPHYR_AUTO_STATION_MENU.get(), ZephyrAutoStationScreen::new);
         event.register(ModMenus.ZEPHYR_LAUNCHER_MENU.get(), ZephyrLauncherScreen::new);
         event.register(ModMenus.WIND_SENSOR_MENU.get(), com.zephyrhauler.client.gui.screen.WindSensorScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ModParticles.ZEPHYR_LEAF.get(), ZephyrLeafParticle.Provider::new);
+        event.registerSpriteSet(ModParticles.ZEPHYR_WIND.get(), ZephyrWindParticle.Provider::new);
     }
 
     @SubscribeEvent

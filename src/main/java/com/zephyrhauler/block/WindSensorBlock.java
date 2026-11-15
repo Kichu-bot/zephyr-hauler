@@ -148,7 +148,7 @@ public class WindSensorBlock extends BaseEntityBlock {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof WindSensorBlockEntity sensorBE) {
 
-            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(level);
+            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(level, pos);
             int currentPower = state.getValue(POWER);
             int newPower = 0;
 

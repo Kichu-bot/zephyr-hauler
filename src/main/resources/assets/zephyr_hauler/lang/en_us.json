@@ -209,5 +209,52 @@
   "gui.zephyr_hauler.hub_monitor.total_docks": "Total Docks: %s",
   "gui.zephyr_hauler.hub_monitor.no_docks": "No docks in this network.",
   "gui.zephyr_hauler.hub_monitor.page": "Page %s / %s",
-  "gui.zephyr_hauler.hub_monitor.default_name": "Zephyr Hub"
+  "gui.zephyr_hauler.hub_monitor.default_name": "Zephyr Hub",
+
+
+  "zephyr_hauler.configuration.ambient_leaves_settings": "Ambient Leaves Settings",
+  "zephyr_hauler.configuration.visual_wind_settings": "Visual Wind Settings",
+
+  "config.zephyr_hauler.enableLeaves": "Enable Ambient Leaves",
+  "config.zephyr_hauler.enableLeaves.tooltip": "Master Switch: Enables or disables the wind and leaves system.",
+  "config.zephyr_hauler.leafSpawnPercent": "Leaf Density (%)",
+  "config.zephyr_hauler.leafSpawnPercent.tooltip": "Leaf density in percentage (100 = Normal, 200 = Double).",
+  "config.zephyr_hauler.leafSizePercent": "Leaf Size (%)",
+  "config.zephyr_hauler.leafSizePercent.tooltip": "Visual size of the falling leaves (100 = Normal).",
+  "config.zephyr_hauler.leafSpawnRadius": "Leaf Spawn Radius",
+  "config.zephyr_hauler.leafSpawnRadius.tooltip": "Spawn radius for leaves in blocks.",
+  "config.zephyr_hauler.leafCulling": "Enable Leaf Culling",
+  "config.zephyr_hauler.leafCulling.tooltip": "Optimization: Stops generating leaves behind your camera.",
+  "config.zephyr_hauler.leafLifetime": "Leaf Lifetime (Ticks)",
+  "config.zephyr_hauler.leafLifetime.tooltip": "Time leaves float before disappearing (20 Ticks = 1 Second).",
+
+  "config.zephyr_hauler.enableWindEffects": "Enable Visual Wind",
+  "config.zephyr_hauler.enableWindEffects.tooltip": "Master Switch: Enables visual wind streams and gusts.",
+  "config.zephyr_hauler.windDensityPercent": "Wind Density (%)",
+  "config.zephyr_hauler.windDensityPercent.tooltip": "Density of wind streams in the air (100 = Normal).",
+  "config.zephyr_hauler.windSpeedMultiplier": "Wind Speed (%)",
+  "config.zephyr_hauler.windSpeedMultiplier.tooltip": "Visual speed of the wind particles.",
+  "config.zephyr_hauler.windSpawnRadius": "Wind Spawn Radius",
+  "config.zephyr_hauler.windSpawnRadius.tooltip": "Spawn radius for wind streams.",
+  "config.zephyr_hauler.windCulling": "Enable Wind Culling",
+  "config.zephyr_hauler.windCulling.tooltip": "Optimization: Stops generating wind behind your camera.",
+  "config.zephyr_hauler.windLifetime": "Wind Lifetime (Ticks)",
+  "config.zephyr_hauler.windLifetime.tooltip": "How long the wind streak exists before fading away (20 Ticks = 1 Second).",
+  "config.zephyr_hauler.windSpawnHeight": "Wind Spawn Height",
+  "config.zephyr_hauler.windSpawnHeight.tooltip": "How high above the player wind streams spawn. Lower values = closer to the ground (2 = normal).",
+
+  "zephyr_hauler.configuration.visual_upgrades_settings": "Visual Upgrades Settings",
+
+  "config.zephyr_hauler.enableVisualUpgrades": "Enable Visual Upgrades",
+  "config.zephyr_hauler.enableVisualUpgrades.tooltip": "Master Switch: Enables 3D visual upgrades on Zephyr Haulers.",
+  "config.zephyr_hauler.showWaxedUpgrade": "Show Waxed Cover",
+  "config.zephyr_hauler.showWaxedUpgrade.tooltip": "Shows the waxed cover layer on upgraded Haulers.",
+  "config.zephyr_hauler.showReinforcedUpgrade": "Show Iron Reinforcements",
+  "config.zephyr_hauler.showReinforcedUpgrade.tooltip": "Shows the iron corner reinforcements on upgraded Haulers.",
+  "config.zephyr_hauler.showInsulatedUpgrade": "Show Lightning Rod",
+  "config.zephyr_hauler.showInsulatedUpgrade.tooltip": "Shows the lightning rod antenna on insulated Haulers.",
+  "config.zephyr_hauler.showNetheriteUpgrade": "Show Netherite Plating",
+  "config.zephyr_hauler.showNetheriteUpgrade.tooltip": "Shows the netherite plating details on upgraded Haulers.",
+  "config.zephyr_hauler.showAbsorbersUpgrade": "Show Shock Absorbers",
+  "config.zephyr_hauler.showAbsorbersUpgrade.tooltip": "Shows the shock absorbers on the lower struts."
 }

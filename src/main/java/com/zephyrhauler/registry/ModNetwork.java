@@ -207,13 +207,7 @@ public class ModNetwork {
         registrar.playToClient(
                 DockStatusResponsePayload.TYPE,
                 DockStatusResponsePayload.CODEC,
-                (payload, context) -> {
-                    context.enqueueWork(() -> {
-                        if (net.minecraft.client.Minecraft.getInstance().screen instanceof com.zephyrhauler.client.gui.screen.ZephyrControllerScreen screen) {
-                            screen.receiveStatusUpdate(payload.status(), payload.message());
-                        }
-                    });
-                }
+                (payload, context) -> context.enqueueWork(() -> com.zephyrhauler.client.ZephyrClientHooks.handleDockStatus(payload))
         );
 
         registrar.playToServer(
@@ -313,13 +307,7 @@ public class ModNetwork {
         registrar.playToClient(
                 HubMonitorPayload.TYPE,
                 HubMonitorPayload.STREAM_CODEC,
-                (payload, context) -> {
-                    context.enqueueWork(() -> {
-                        net.minecraft.client.Minecraft.getInstance().setScreen(
-                                new com.zephyrhauler.client.gui.screen.ZephyrHubMonitorScreen(payload)
-                        );
-                    });
-                }
+                (payload, context) -> context.enqueueWork(() -> com.zephyrhauler.client.ZephyrClientHooks.openHubMonitor(payload))
         );
 
         registrar.playToServer(
@@ -376,13 +364,7 @@ public class ModNetwork {
         registrar.playToClient(
                 HubStatsResponsePayload.TYPE,
                 HubStatsResponsePayload.CODEC,
-                (payload, context) -> {
-                    context.enqueueWork(() -> {
-                        if (net.minecraft.client.Minecraft.getInstance().screen instanceof com.zephyrhauler.client.gui.screen.ZephyrControllerScreen screen) {
-                            screen.receiveHubStatsUpdate(payload.total(), payload.free(), payload.reserved(), payload.occupied(), payload.inaccessible());
-                        }
-                    });
-                }
+                (payload, context) -> context.enqueueWork(() -> com.zephyrhauler.client.ZephyrClientHooks.handleHubStats(payload))
         );
     }
 }

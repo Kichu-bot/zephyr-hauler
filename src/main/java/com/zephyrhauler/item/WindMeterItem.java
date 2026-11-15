@@ -61,7 +61,7 @@ public class WindMeterItem extends Item implements GeoItem {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!level.isClientSide()) {
-            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(level);
+            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(level, player.blockPosition());
             long id = GeoItem.getOrAssignId(stack, (ServerLevel) level);
 
             this.triggerAnim(player, id, "wind_controller", wind.direction().name());
@@ -86,19 +86,16 @@ public class WindMeterItem extends Item implements GeoItem {
             } else {
                 String strengthKey = "message.zephyr_hauler.wind.soft_breeze";
                 ChatFormatting color = ChatFormatting.AQUA;
-                float volume = 0.3f;
-                float pitch = 1.0f;
+                int particleCount = 3; // ¡NUEVO! Control de densidad de partículas
 
                 if (level.isThundering()) {
                     strengthKey = "message.zephyr_hauler.wind.hurricane_wind";
                     color = ChatFormatting.DARK_RED;
-                    volume = 1.0f;
-                    pitch = 0.5f;
+                    particleCount = 12;
                 } else if (level.isRaining()) {
                     strengthKey = "message.zephyr_hauler.wind.strong_wind";
                     color = ChatFormatting.BLUE;
-                    volume = 0.7f;
-                    pitch = 0.8f;
+                    particleCount = 7;
                 }
 
                 if (level instanceof ServerLevel serverLevel) {
@@ -107,7 +104,16 @@ public class WindMeterItem extends Item implements GeoItem {
                     double py = player.getY() + 1.5;
                     double pz = player.getZ() + look.z;
 
-                    serverLevel.sendParticles(ParticleTypes.CLOUD, px, py, pz, 3, 0.2, 0.2, 0.2, 0.0);
+                    double vx = wind.vectorX();
+                    double vz = wind.vectorZ();
+
+                    for (int i = 0; i < particleCount; i++) {
+                        double offsetX = (level.random.nextDouble() - 0.5) * 2.0;
+                        double offsetY = (level.random.nextDouble() - 0.5) * 2.0;
+                        double offsetZ = (level.random.nextDouble() - 0.5) * 2.0;
+
+                        serverLevel.sendParticles(ParticleTypes.CLOUD, px + offsetX, py + offsetY, pz + offsetZ, 0, vx, 0.0, vz, 1.0);
+                    }
                 }
 
                 Component strengthComp = Component.translatable(strengthKey);
@@ -121,7 +127,6 @@ public class WindMeterItem extends Item implements GeoItem {
                 );
             }
         }
-
         return InteractionResultHolder.success(stack);
     }
 }

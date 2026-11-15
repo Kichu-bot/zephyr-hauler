@@ -144,7 +144,7 @@ public class WindSensorBlockEntity extends BlockEntity implements GeoBlockEntity
         }
 
         if (this.cooldownTimer == 0 && this.pulseTimer == 0 && this.level.getGameTime() % 20 == 0) {
-            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(this.level);
+            ZephyrWindSystem.WindInfo wind = ZephyrWindSystem.getCurrentWind(this.level, this.worldPosition);
 
             if (wind.direction() == this.targetDirection) {
                 BlockState state = this.getBlockState();

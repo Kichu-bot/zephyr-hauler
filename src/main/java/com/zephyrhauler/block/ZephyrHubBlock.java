@@ -1,10 +1,18 @@
 package com.zephyrhauler.block;
 
-import com.zephyrhauler.block.entity.ZephyrHubBlockEntity;
 import com.mojang.serialization.MapCodec;
+import com.zephyrhauler.block.entity.ZephyrDockBlockEntity;
+import com.zephyrhauler.block.entity.ZephyrHubBlockEntity;
+import com.zephyrhauler.client.ZephyrClientHooks;
+import com.zephyrhauler.entity.ZephyrHaulerEntity;
+import com.zephyrhauler.network.HubMonitorPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -17,8 +25,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ZephyrHubBlock extends BaseEntityBlock {
     public static final MapCodec<ZephyrHubBlock> CODEC = simpleCodec(ZephyrHubBlock::new);
@@ -94,45 +107,40 @@ public class ZephyrHubBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable net.minecraft.world.entity.LivingEntity placer, net.minecraft.world.item.ItemStack stack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
-        if (level.isClientSide() && placer instanceof net.minecraft.client.player.LocalPlayer) {
+        if (level.isClientSide() && placer instanceof Player) {
             BlockEntity be = level.getBlockEntity(pos);
             String currentName = (be instanceof ZephyrHubBlockEntity hubBE) ? hubBE.getCustomName() : "";
-            openNamingScreen(pos, currentName);
+            ZephyrClientHooks.openHubNaming(pos, currentName);
         }
     }
 
-    @net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)
-    private void openNamingScreen(BlockPos pos, String currentName) {
-        net.minecraft.client.Minecraft.getInstance().setScreen(new com.zephyrhauler.client.gui.screen.ZephyrHubNamingScreen(pos, currentName));
-    }
-
     @Override
-    protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof ZephyrHubBlockEntity hubBE) {
 
             if (player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
                 if (!level.isClientSide) {
-                    java.util.List<com.zephyrhauler.network.HubMonitorPayload.DockInfo> dockList = new java.util.ArrayList<>();
+                    List<HubMonitorPayload.DockInfo> dockList = new ArrayList<>();
 
                     for (BlockPos dPos : hubBE.getConnectedDocks()) {
 
-                        if (com.zephyrhauler.entity.ZephyrHaulerEntity.isAirspaceObstructed(level, dPos)) {
-                            dockList.add(new com.zephyrhauler.network.HubMonitorPayload.DockInfo(dPos, "Zephyr Dock", 3)); // 3 = Inaccesible
+                        if (ZephyrHaulerEntity.isAirspaceObstructed(level, dPos)) {
+                            dockList.add(new HubMonitorPayload.DockInfo(dPos, "Zephyr Dock", 3));
                             continue;
                         }
 
                         BlockState dState = level.getBlockState(dPos);
                         if (dState.getBlock() instanceof ZephyrDockBlock) {
                             BlockEntity dockBe = level.getBlockEntity(dPos);
-                            if (dockBe instanceof com.zephyrhauler.block.entity.ZephyrDockBlockEntity dockEntity) {
+                            if (dockBe instanceof ZephyrDockBlockEntity dockEntity) {
 
                                 boolean physicallyOccupied = !level.getEntitiesOfClass(
-                                        com.zephyrhauler.entity.ZephyrHaulerEntity.class,
-                                        new net.minecraft.world.phys.AABB(dPos.above()).inflate(0.1)
+                                        ZephyrHaulerEntity.class,
+                                        new AABB(dPos.above()).inflate(0.1)
                                 ).isEmpty();
 
                                 int status = 0;
@@ -143,29 +151,29 @@ public class ZephyrHubBlock extends BaseEntityBlock {
                                 }
 
                                 String dName = dockEntity.getCustomName().isEmpty() ? "Zephyr Dock" : dockEntity.getCustomName();
-                                dockList.add(new com.zephyrhauler.network.HubMonitorPayload.DockInfo(dPos, dName, status));
+                                dockList.add(new HubMonitorPayload.DockInfo(dPos, dName, status));
                             }
                         } else {
-                            dockList.add(new com.zephyrhauler.network.HubMonitorPayload.DockInfo(dPos, "Zephyr Dock", 3));
+                            dockList.add(new HubMonitorPayload.DockInfo(dPos, "Zephyr Dock", 3));
                         }
                     }
 
-                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
-                            (net.minecraft.server.level.ServerPlayer) player,
-                            new com.zephyrhauler.network.HubMonitorPayload(pos, hubBE.getCustomName(), dockList)
+                    PacketDistributor.sendToPlayer(
+                            (ServerPlayer) player,
+                            new HubMonitorPayload(pos, hubBE.getCustomName(), dockList)
                     );
                 }
-                return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
 
             else if (!player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
                 if (level.isClientSide) {
                     String currentName = hubBE.getCustomName();
-                    openNamingScreen(pos, currentName);
+                    ZephyrClientHooks.openHubNaming(pos, currentName);
                 }
-                return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
-        return net.minecraft.world.InteractionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

@@ -209,5 +209,55 @@
   "gui.zephyr_hauler.hub_monitor.total_docks": "Total de Muelles: %s",
   "gui.zephyr_hauler.hub_monitor.no_docks": "No hay muelles en esta red.",
   "gui.zephyr_hauler.hub_monitor.page": "Pág %s / %s",
-  "gui.zephyr_hauler.hub_monitor.default_name": "Hub Zephyr"
+  "gui.zephyr_hauler.hub_monitor.default_name": "Hub Zephyr",
+
+
+  "zephyr_hauler.configuration.atmospheric_settings": "Ajustes Atmosféricos y Viento",
+
+  "config.zephyr_hauler.enableLeaves": "Activar Hojas Ambientales",
+  "config.zephyr_hauler.enableLeaves.tooltip": "Interruptor Maestro: Activa o desactiva el sistema de viento y hojas.",
+
+  "config.zephyr_hauler.leafSpawnPercent": "Densidad de Hojas (%)",
+  "config.zephyr_hauler.leafSpawnPercent.tooltip": "Densidad de hojas en porcentaje (100 = Normal, 200 = Doble).",
+
+  "config.zephyr_hauler.leafSizePercent": "Tamaño de Hojas (%)",
+  "config.zephyr_hauler.leafSizePercent.tooltip": "Tamaño visual de las hojas cayendo (100 = Normal).",
+
+  "config.zephyr_hauler.spawnRadius": "Radio de Aparición",
+  "config.zephyr_hauler.spawnRadius.tooltip": "Radio en bloques. Valores altos = más inmersión pero requiere mejor PC.",
+
+  "config.zephyr_hauler.cullBehindPlayer": "Optimización de Visión (Culling)",
+  "config.zephyr_hauler.cullBehindPlayer.tooltip": "Optimización Extrema: Evita generar hojas a tus espaldas (Ahorra mucho lag).",
+
+  "config.zephyr_hauler.leafLifetime": "Duración en el Suelo (Ticks)",
+  "config.zephyr_hauler.leafLifetime.tooltip": "Tiempo de vida de las hojas en el suelo (20 Ticks = 1 Segundo).",
+
+  "zephyr_hauler.configuration.ambient_leaves_settings": "Ajustes de Hojas",
+  "zephyr_hauler.configuration.visual_wind_settings": "Ajustes de Viento",
+
+  "config.zephyr_hauler.enableWindEffects": "Activar Viento Visual",
+  "config.zephyr_hauler.enableWindEffects.tooltip": "Interruptor Maestro: Activa las ráfagas y estelas de viento.",
+  "config.zephyr_hauler.windDensityPercent": "Densidad del Viento (%)",
+  "config.zephyr_hauler.windDensityPercent.tooltip": "Cantidad de estelas de viento en el aire (100 = Normal).",
+  "config.zephyr_hauler.windSpeedMultiplier": "Velocidad del Viento (%)",
+  "config.zephyr_hauler.windSpeedMultiplier.tooltip": "Velocidad visual a la que viajan las partículas.",
+  "config.zephyr_hauler.windSpawnRadius": "Radio del Viento",
+  "config.zephyr_hauler.windSpawnRadius.tooltip": "Radio en bloques donde se genera el viento.",
+  "config.zephyr_hauler.windCulling": "Optimización del Viento (Culling)",
+  "config.zephyr_hauler.windCulling.tooltip": "Evita generar viento a tus espaldas para ahorrar rendimiento.",
+
+  "zephyr_hauler.configuration.visual_upgrades_settings": "Ajustes de Mejoras Visuales",
+
+  "config.zephyr_hauler.enableVisualUpgrades": "Activar Mejoras Visuales",
+  "config.zephyr_hauler.enableVisualUpgrades.tooltip": "Interruptor maestro: Activa las mejoras visuales 3D en los Zephyr Haulers.",
+  "config.zephyr_hauler.showWaxedUpgrade": "Mostrar Cubierta Encerada",
+  "config.zephyr_hauler.showWaxedUpgrade.tooltip": "Muestra la capa de cubierta encerada en los Haulers mejorados.",
+  "config.zephyr_hauler.showReinforcedUpgrade": "Mostrar Refuerzos de Hierro",
+  "config.zephyr_hauler.showReinforcedUpgrade.tooltip": "Muestra los refuerzos metálicos en las esquinas de los Haulers mejorados.",
+  "config.zephyr_hauler.showInsulatedUpgrade": "Mostrar Pararrayos",
+  "config.zephyr_hauler.showInsulatedUpgrade.tooltip": "Muestra la antena pararrayos en los Haulers aislados.",
+  "config.zephyr_hauler.showNetheriteUpgrade": "Mostrar Revestimiento de Netherita",
+  "config.zephyr_hauler.showNetheriteUpgrade.tooltip": "Muestra los detalles de revestimiento de netherita en los Haulers mejorados.",
+  "config.zephyr_hauler.showAbsorbersUpgrade": "Mostrar Amortiguadores",
+  "config.zephyr_hauler.showAbsorbersUpgrade.tooltip": "Muestra los amortiguadores en los soportes inferiores."
 }
